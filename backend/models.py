@@ -12,7 +12,29 @@ class EstimateResponse(BaseModel):
     input_tokens: int
     output_tokens: int
     total_tokens: int
+    # split costs
+    input_cost: float
+    output_cost: float
     cost: float
+    # model metadata
     model_name: str
+    provider: str
     context_window: int
     context_percent: float
+    tokenizer: str
+    tokenizer_note: str
+    input_price_per_1m: float
+    output_price_per_1m: float
+    last_updated: str
+
+
+class ModelInfo(BaseModel):
+    id: str
+    name: str
+    provider: str
+    input_price_per_1m: float
+    output_price_per_1m: float
+    context_window: int
+    tokenizer: str
+    tokenizer_note: str
+    last_updated: str

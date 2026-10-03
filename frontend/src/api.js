@@ -1,10 +1,51 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+// Kibble API client
+// API keys are NEVER stored or sent from the frontend.
+// All estimation is done server-side.
 
-export async function estimatePrompt(prompt, modelId, systemPrompt, expectedOutputTokens, signal) {
-  const requestController = new AbortController();
-  const timeout = setTimeout(() => requestController.abort(), 5000);
-  const abortRequest = () => requestController.abort();
-  signal?.addEventListener("abort", abortRequest, { once: true });
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const DEFAULT_TIMEOUT_MS = 8000;
+
+/**
+ * Fetch all models from the backend catalogue.
+ * @param {AbortSignal} [signal]
+ */
+export async function fetchModels(signal) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+  const propagate = () => controller.abort();
+  signal?.addEventListener("abort", propagate, { once: true });
+
+  try {
+    const response = await fetch(`${API_URL}/api/models`, { signal: controller.signal });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return /** @type {import("./types").ModelInfo[]} */ (await response.json());
+  } catch (err) {
+    return _wrapError(err, signal);
+  } finally {
+    clearTimeout(timer);
+    signal?.removeEventListener("abort", propagate);
+  }
+}
+
+/**
+ * Request a token + cost estimate from the backend.
+ * @param {string} prompt
+ * @param {string} modelId
+ * @param {string} systemPrompt
+ * @param {number} expectedOutputTokens
+ * @param {AbortSignal} [signal]
+ */
+export async function estimatePrompt(
+  prompt,
+  modelId,
+  systemPrompt,
+  expectedOutputTokens,
+  signal,
+) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+  const propagate = () => controller.abort();
+  signal?.addEventListener("abort", propagate, { once: true });
 
   try {
     const response = await fetch(`${API_URL}/api/estimate`, {
@@ -16,25 +57,30 @@ export async function estimatePrompt(prompt, modelId, systemPrompt, expectedOutp
         system_prompt: systemPrompt,
         expected_output_tokens: expectedOutputTokens,
       }),
-      signal: requestController.signal,
+      signal: controller.signal,
     });
 
     if (!response.ok) {
       const body = await response.json().catch(() => ({}));
-      throw new Error(body.detail ?? "Unable to estimate prompt");
+      throw new Error(body.detail ?? `HTTP ${response.status}`);
     }
 
-    return response.json();
-  } catch (error) {
-    if (requestController.signal.aborted && !signal?.aborted) {
-      throw new Error("The API took too long to respond. Is the backend running?");
-    }
-    if (error instanceof TypeError) {
-      throw new Error("API unavailable. Start the FastAPI backend on port 8000.");
-    }
-    throw error;
+    return await response.json();
+  } catch (err) {
+    return _wrapError(err, signal);
   } finally {
-    clearTimeout(timeout);
-    signal?.removeEventListener("abort", abortRequest);
+    clearTimeout(timer);
+    signal?.removeEventListener("abort", propagate);
   }
+}
+
+function _wrapError(err, outerSignal) {
+  if (err?.name === "AbortError") {
+    if (outerSignal?.aborted) throw err; // debounce / user cancelled
+    throw new Error("The API took too long to respond. Is the backend running?");
+  }
+  if (err instanceof TypeError) {
+    throw new Error("API unavailable. Start the FastAPI backend on port 8000.");
+  }
+  throw err;
 }

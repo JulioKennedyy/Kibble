@@ -1,29 +1,49 @@
-export const models = [
-  { id: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
-  { id: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
-  { id: "gpt-5", label: "GPT-5" },
-  { id: "gpt-4o", label: "GPT-4o" },
-  { id: "gpt-4o-mini", label: "GPT-4o Mini" },
-  { id: "claude-sonnet-4-5", label: "Claude Sonnet 4.5" },
+// Default fallback list so the UI renders even before /api/models resolves.
+// The backend is the source of truth; this list is only a UI seed.
+export const FALLBACK_MODELS = [
+  { id: "gemini-2.5-flash", name: "Gemini 2.5 Flash", provider: "Google" },
+  { id: "gemini-2.5-pro",   name: "Gemini 2.5 Pro",   provider: "Google" },
+  { id: "gpt-5",            name: "GPT-5",             provider: "OpenAI" },
+  { id: "gpt-4o",           name: "GPT-4o",            provider: "OpenAI" },
+  { id: "gpt-4o-mini",      name: "GPT-4o Mini",       provider: "OpenAI" },
+  { id: "claude-sonnet-4-5",name: "Claude Sonnet 4.5", provider: "Anthropic" },
 ];
 
-export function ModelTabs({ selectedModel, onSelect }) {
+const PROVIDER_COLORS = {
+  Google:    "text-emerald-400",
+  OpenAI:    "text-sky-400",
+  Anthropic: "text-violet-400",
+};
+
+export function ModelTabs({ models, selectedModel, onSelect }) {
+  const list = models?.length ? models : FALLBACK_MODELS;
+
   return (
-    <div className="flex w-full gap-1 overflow-x-auto rounded-xl border border-zinc-800/80 bg-zinc-950 p-1">
-      {models.map((model) => (
-        <button
-          className={`whitespace-nowrap rounded-lg px-3 py-2 text-xs font-medium transition ${
-            selectedModel === model.id
-              ? "bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-300/20 shadow-sm"
-              : "text-zinc-500 hover:bg-cyan-400/5 hover:text-cyan-100"
-          }`}
-          key={model.id}
-          onClick={() => onSelect(model.id)}
-          type="button"
-        >
-          {model.label}
-        </button>
-      ))}
+    <div
+      className="flex w-full gap-1 overflow-x-auto rounded-xl border border-zinc-800/80 bg-zinc-950 p-1"
+      role="tablist"
+      aria-label="Model selector"
+    >
+      {list.map((model) => {
+        const active = selectedModel === model.id;
+        const providerColor = PROVIDER_COLORS[model.provider] ?? "text-zinc-400";
+        return (
+          <button
+            aria-selected={active}
+            className={`whitespace-nowrap rounded-lg px-3 py-2 text-xs font-medium transition ${
+              active
+                ? "bg-cyan-400/10 text-cyan-200 ring-1 ring-cyan-300/20 shadow-sm"
+                : "text-zinc-500 hover:bg-cyan-400/5 hover:text-cyan-100"
+            }`}
+            key={model.id}
+            onClick={() => onSelect(model.id)}
+            role="tab"
+            type="button"
+          >
+            <span className={active ? "" : providerColor}>{model.name}</span>
+          </button>
+        );
+      })}
     </div>
   );
 }

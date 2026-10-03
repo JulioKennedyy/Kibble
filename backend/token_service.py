@@ -1,15 +1,101 @@
+"""
+Token estimation service.
+
+IMPORTANT – tokenizer note
+--------------------------
+tiktoken (o200k_base) is the *native* tokenizer for OpenAI GPT models.
+For Gemini and Claude models we re-use o200k_base as a practical
+**approximation only**. The real count from the provider may differ by
+±5-15 % depending on text structure, whitespace, and special tokens.
+Always validate against the usage object returned by the provider API.
+"""
+
+from __future__ import annotations
+
+from datetime import date
 from functools import lru_cache
+from typing import Any
 
 import tiktoken
 
 
-MODEL_PRICING = {
-    "gemini-2.5-flash": {"name": "Gemini 2.5 Flash", "input_price": 0.30, "output_price": 2.50, "context_window": 1_048_576, "quota_tokens": 1_000_000},
-    "gemini-2.5-pro": {"name": "Gemini 2.5 Pro", "input_price": 1.25, "output_price": 10.00, "context_window": 1_048_576, "quota_tokens": 1_000_000},
-    "gpt-5": {"name": "GPT-5", "input_price": 1.25, "output_price": 10.00, "context_window": 400_000, "quota_tokens": 400_000},
-    "gpt-4o": {"name": "GPT-4o", "input_price": 5.00, "output_price": 15.00, "context_window": 128_000, "quota_tokens": 128_000},
-    "gpt-4o-mini": {"name": "GPT-4o Mini", "input_price": 0.15, "output_price": 0.60, "context_window": 128_000, "quota_tokens": 128_000},
-    "claude-sonnet-4-5": {"name": "Claude Sonnet 4.5", "input_price": 3.00, "output_price": 15.00, "context_window": 200_000, "quota_tokens": 200_000},
+# ---------------------------------------------------------------------------
+# Model catalogue
+# All prices in USD per 1 000 000 tokens (as published by each provider).
+# last_updated: date when the table was last reviewed.
+# tokenizer: which tokenizer is actually used for counting here.
+# tokenizer_note: human-readable caveat about approximation accuracy.
+# ---------------------------------------------------------------------------
+MODEL_CATALOGUE: dict[str, dict[str, Any]] = {
+    "gpt-5": {
+        "name": "GPT-5",
+        "provider": "OpenAI",
+        "input_price": 1.25,
+        "output_price": 10.00,
+        "context_window": 400_000,
+        "tokenizer": "o200k_base",
+        "tokenizer_note": "Native tiktoken tokenizer — exact match.",
+        "last_updated": date(2025, 5, 16),
+    },
+    "gpt-4o": {
+        "name": "GPT-4o",
+        "provider": "OpenAI",
+        "input_price": 5.00,
+        "output_price": 15.00,
+        "context_window": 128_000,
+        "tokenizer": "o200k_base",
+        "tokenizer_note": "Native tiktoken tokenizer — exact match.",
+        "last_updated": date(2024, 5, 13),
+    },
+    "gpt-4o-mini": {
+        "name": "GPT-4o Mini",
+        "provider": "OpenAI",
+        "input_price": 0.15,
+        "output_price": 0.60,
+        "context_window": 128_000,
+        "tokenizer": "o200k_base",
+        "tokenizer_note": "Native tiktoken tokenizer — exact match.",
+        "last_updated": date(2024, 7, 18),
+    },
+    "gemini-2.5-flash": {
+        "name": "Gemini 2.5 Flash",
+        "provider": "Google",
+        "input_price": 0.30,
+        "output_price": 2.50,
+        "context_window": 1_048_576,
+        "tokenizer": "o200k_base (approx)",
+        "tokenizer_note": (
+            "tiktoken is an approximation for Gemini. "
+            "Google uses SentencePiece; counts may differ by ±5–15 %."
+        ),
+        "last_updated": date(2025, 5, 20),
+    },
+    "gemini-2.5-pro": {
+        "name": "Gemini 2.5 Pro",
+        "provider": "Google",
+        "input_price": 1.25,
+        "output_price": 10.00,
+        "context_window": 1_048_576,
+        "tokenizer": "o200k_base (approx)",
+        "tokenizer_note": (
+            "tiktoken is an approximation for Gemini. "
+            "Google uses SentencePiece; counts may differ by ±5–15 %."
+        ),
+        "last_updated": date(2025, 5, 20),
+    },
+    "claude-sonnet-4-5": {
+        "name": "Claude Sonnet 4.5",
+        "provider": "Anthropic",
+        "input_price": 3.00,
+        "output_price": 15.00,
+        "context_window": 200_000,
+        "tokenizer": "o200k_base (approx)",
+        "tokenizer_note": (
+            "tiktoken is an approximation for Claude. "
+            "Anthropic uses a proprietary BPE tokenizer; counts may differ by ±5–10 %."
+        ),
+        "last_updated": date(2025, 7, 22),
+    },
 }
 
 
@@ -18,29 +104,63 @@ def _encoding() -> tiktoken.Encoding:
     return tiktoken.get_encoding("o200k_base")
 
 
+def list_models() -> list[dict[str, Any]]:
+    """Return public model metadata (no pricing internals leaked)."""
+    result = []
+    for model_id, m in MODEL_CATALOGUE.items():
+        result.append(
+            {
+                "id": model_id,
+                "name": m["name"],
+                "provider": m["provider"],
+                "input_price_per_1m": m["input_price"],
+                "output_price_per_1m": m["output_price"],
+                "context_window": m["context_window"],
+                "tokenizer": m["tokenizer"],
+                "tokenizer_note": m["tokenizer_note"],
+                "last_updated": m["last_updated"].isoformat(),
+            }
+        )
+    return result
+
+
 def estimate_tokens(
     prompt: str,
     model_id: str,
     system_prompt: str = "",
     expected_output_tokens: int = 512,
 ) -> dict[str, int | float | str]:
-    model = MODEL_PRICING.get(model_id)
+    model = MODEL_CATALOGUE.get(model_id)
     if model is None:
-        raise ValueError(f"Unsupported model: {model_id}")
+        raise ValueError(
+            f"Unsupported model: '{model_id}'. "
+            f"Valid ids: {list(MODEL_CATALOGUE)}"
+        )
 
-    input_tokens = len(_encoding().encode(system_prompt + "\n" + prompt))
+    enc = _encoding()
+    input_tokens = len(enc.encode(system_prompt + "\n" + prompt))
     total_tokens = input_tokens + expected_output_tokens
-    cost = (
-        input_tokens * model["input_price"]
-        + expected_output_tokens * model["output_price"]
-    ) / 1_000_000
+
+    input_cost = input_tokens * model["input_price"] / 1_000_000
+    output_cost = expected_output_tokens * model["output_price"] / 1_000_000
+    total_cost = input_cost + output_cost
+
     context_percent = min(total_tokens / model["context_window"] * 100, 100)
+
     return {
         "input_tokens": input_tokens,
         "output_tokens": expected_output_tokens,
         "total_tokens": total_tokens,
-        "cost": cost,
+        "input_cost": input_cost,
+        "output_cost": output_cost,
+        "cost": total_cost,
         "model_name": model["name"],
+        "provider": model["provider"],
         "context_window": model["context_window"],
         "context_percent": context_percent,
+        "tokenizer": model["tokenizer"],
+        "tokenizer_note": model["tokenizer_note"],
+        "input_price_per_1m": model["input_price"],
+        "output_price_per_1m": model["output_price"],
+        "last_updated": model["last_updated"].isoformat(),
     }
