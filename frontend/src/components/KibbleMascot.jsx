@@ -1,97 +1,35 @@
 /**
- * KibbleMascot — SVG dot-matrix mascot with three states:
- *   idle    → calm cyan grid
- *   loading → animated pulse wave
- *   error   → red X pattern
- *
- * The dot grid is 5×5, each dot addressed as (col, row).
+ * KibbleMascot — Kibble's single colorful dot.
+ * The face keeps the mark recognizable without turning it into a group of dots.
  */
 
-const DOT = 5;
-const GAP = 3;
-const R = 2.2;
-const TOTAL = DOT * (R * 2) + (DOT - 1) * GAP; // ≈ 34px viewBox
-
-// Dot positions [col, row] for each state pattern
-const PATTERNS = {
-  idle: [
-    [0,0],[1,0],[2,0],[3,0],[4,0],
-    [0,1],[2,1],[4,1],
-    [0,2],[1,2],[2,2],[3,2],[4,2],
-    [0,3],[2,3],[4,3],
-    [0,4],[1,4],[2,4],[3,4],[4,4],
-  ],
-  loading: [
-    [0,0],[1,0],[2,0],[3,0],[4,0],
-    [0,1],[1,1],[2,1],[3,1],[4,1],
-    [0,2],[1,2],[2,2],[3,2],[4,2],
-    [0,3],[1,3],[2,3],[3,3],[4,3],
-    [0,4],[1,4],[2,4],[3,4],[4,4],
-  ],
-  error: [
-    [0,0],[4,0],
-    [1,1],[3,1],
-    [2,2],
-    [1,3],[3,3],
-    [0,4],[4,4],
-  ],
-};
-
-function cx(col) { return col * (R * 2 + GAP) + R; }
-function cy(row) { return row * (R * 2 + GAP) + R; }
-
 export function KibbleMascot({ state = "idle" }) {
-  const dots = PATTERNS[state] ?? PATTERNS.idle;
-
-  const dotColor =
-    state === "error"   ? "#f87171"  // red-400
-    : state === "loading" ? "#67e8f9" // cyan-300
-    : "#22d3ee";                      // cyan-400
+  const isError = state === "error";
+  const color = isError ? "#f87171" : "#f59e0b";
 
   return (
     <svg
       aria-label={`Kibble mascot — ${state}`}
-      height={TOTAL}
+      height="34"
       role="img"
-      viewBox={`0 0 ${TOTAL} ${TOTAL}`}
-      width={TOTAL}
+      viewBox="0 0 34 34"
+      width="34"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Background faint grid */}
-      {Array.from({ length: DOT }, (_, row) =>
-        Array.from({ length: DOT }, (_, col) => (
-          <circle
-            key={`bg-${col}-${row}`}
-            cx={cx(col)}
-            cy={cy(row)}
-            r={R}
-            fill={dotColor}
-            opacity={0.08}
+      <g opacity={isError ? 0.7 : 1}>
+        <circle cx="17" cy="17" r="11" fill={color} />
+        <circle cx="13.5" cy="15" r="1.5" fill="#071216" />
+        <circle cx="20.5" cy="15" r="1.5" fill="#071216" />
+        <path d="M12.5 20c2.5 2 6.5 2 9 0" fill="none" stroke="#071216" strokeLinecap="round" strokeWidth="1.5" />
+        {state === "loading" && (
+          <animate
+            attributeName="opacity"
+            values="1;0.45;1"
+            dur="1.2s"
+            repeatCount="indefinite"
           />
-        ))
-      )}
-
-      {/* Active dots */}
-      {dots.map(([col, row], i) => (
-        <circle
-          key={`dot-${col}-${row}`}
-          cx={cx(col)}
-          cy={cy(row)}
-          r={R}
-          fill={dotColor}
-          opacity={1}
-        >
-          {state === "loading" && (
-            <animate
-              attributeName="opacity"
-              values="1;0.25;1"
-              dur="1.4s"
-              begin={`${(i * 0.06).toFixed(2)}s`}
-              repeatCount="indefinite"
-            />
-          )}
-        </circle>
-      ))}
+        )}
+      </g>
     </svg>
   );
 }

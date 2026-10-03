@@ -86,22 +86,25 @@ export function StatsDisplay({ stats, isLoading, error, budgetTokens, onRetry })
       )}
 
       {/* Estimated cost */}
-      <span className="inline-flex items-center gap-1.5">
-        <Coins size={13} strokeWidth={1.8} className="text-emerald-400" />
-        <span>
-          <span className="font-medium text-cyan-300" title="Input cost">
-            {usd(stats?.input_cost)}
-          </span>
-          <span className="mx-1 text-zinc-700">+</span>
-          <span className="font-medium text-violet-300" title="Output cost">
-            {usd(stats?.output_cost)}
-          </span>
-          <span className="mx-1 text-zinc-700">=</span>
-          <span className="font-semibold text-emerald-300" title="Total estimated cost">
-            {usd(stats?.cost)}
-          </span>
+      <div
+        aria-label="Estimated cost"
+        className="ml-auto flex min-w-[205px] items-center justify-between gap-4 rounded-lg border border-emerald-400/20 bg-emerald-400/5 px-3 py-2"
+      >
+        <div className="flex items-center gap-2">
+          <Coins size={14} strokeWidth={1.8} className="text-emerald-300" />
+          <div>
+            <div className="text-[10px] uppercase tracking-[0.12em] text-zinc-500">
+              estimated cost
+            </div>
+            <div className="mt-0.5 text-[10px] tabular-nums text-zinc-600">
+              {usd(stats?.input_cost)} prompt + {usd(stats?.output_cost)} response
+            </div>
+          </div>
+        </div>
+        <span className="font-semibold tabular-nums text-emerald-200" title="Total estimated cost">
+          {usd(stats?.cost)}
         </span>
-      </span>
+      </div>
     </div>
   );
 }

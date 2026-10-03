@@ -13,7 +13,7 @@ function Kill-Port([int]$Port) {
         Stop-Process -Id $conn.OwningProcess -Force -ErrorAction SilentlyContinue
         Write-Host "   Stopped." -ForegroundColor Green
     } else {
-        Write-Host "Port $Port: nothing running." -ForegroundColor DarkGray
+        Write-Host "Port ${Port}: nothing running." -ForegroundColor DarkGray
     }
 }
 

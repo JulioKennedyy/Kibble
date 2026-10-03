@@ -2,7 +2,9 @@
 // The backend is the source of truth; this list is only a UI seed.
 export const FALLBACK_MODELS = [
   { id: "gemini-2.5-flash", name: "Gemini 2.5 Flash", provider: "Google" },
+  { id: "gemini-2.5-flash-lite", name: "Gemini 2.5 Flash-Lite", provider: "Google" },
   { id: "gemini-2.5-pro",   name: "Gemini 2.5 Pro",   provider: "Google" },
+  { id: "gemini-3.1-pro-preview", name: "Gemini 3.1 Pro Preview", provider: "Google" },
   { id: "gpt-5",            name: "GPT-5",             provider: "OpenAI" },
   { id: "gpt-4o",           name: "GPT-4o",            provider: "OpenAI" },
   { id: "gpt-4o-mini",      name: "GPT-4o Mini",       provider: "OpenAI" },

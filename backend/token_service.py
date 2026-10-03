@@ -70,6 +70,19 @@ MODEL_CATALOGUE: dict[str, dict[str, Any]] = {
         ),
         "last_updated": date(2025, 5, 20),
     },
+    "gemini-2.5-flash-lite": {
+        "name": "Gemini 2.5 Flash-Lite",
+        "provider": "Google",
+        "input_price": 0.10,
+        "output_price": 0.40,
+        "context_window": 1_048_576,
+        "tokenizer": "o200k_base (approx)",
+        "tokenizer_note": (
+            "tiktoken is an approximation for Gemini. "
+            "Google uses SentencePiece; counts may differ by ±5–15 %."
+        ),
+        "last_updated": date(2025, 7, 22),
+    },
     "gemini-2.5-pro": {
         "name": "Gemini 2.5 Pro",
         "provider": "Google",
@@ -82,6 +95,19 @@ MODEL_CATALOGUE: dict[str, dict[str, Any]] = {
             "Google uses SentencePiece; counts may differ by ±5–15 %."
         ),
         "last_updated": date(2025, 5, 20),
+    },
+    "gemini-3.1-pro-preview": {
+        "name": "Gemini 3.1 Pro Preview",
+        "provider": "Google",
+        "input_price": 2.00,
+        "output_price": 12.00,
+        "context_window": 1_048_576,
+        "tokenizer": "o200k_base (approx)",
+        "tokenizer_note": (
+            "tiktoken is an approximation for Gemini. "
+            "Google uses SentencePiece; counts may differ by ±5–15 %."
+        ),
+        "last_updated": date(2026, 10, 3),
     },
     "claude-sonnet-4-5": {
         "name": "Claude Sonnet 4.5",

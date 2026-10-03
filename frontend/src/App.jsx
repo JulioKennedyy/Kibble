@@ -151,7 +151,7 @@ export default function App() {
             />
             <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-500">
               <label className="flex items-center gap-2">
-                Output&nbsp;tokens
+                Response limit
                 <input
                   aria-label="Expected output tokens"
                   className="w-20 rounded-lg border border-zinc-800 bg-zinc-950/70 px-2 py-2 text-xs text-zinc-200 outline-none focus:border-cyan-400/40"
@@ -166,7 +166,7 @@ export default function App() {
                 />
               </label>
               <label className="flex items-center gap-2">
-                Budget&nbsp;local
+                Planning budget
                 <input
                   aria-label="Local token budget"
                   className="w-24 rounded-lg border border-zinc-800 bg-zinc-950/70 px-2 py-2 text-xs text-zinc-200 outline-none focus:border-cyan-400/40"

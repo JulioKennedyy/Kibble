@@ -24,7 +24,9 @@ Kibble counts system prompt tokens + prompt tokens + expected output tokens, the
 | GPT-4o | OpenAI | 128 000 | tiktoken (exact) |
 | GPT-4o Mini | OpenAI | 128 000 | tiktoken (exact) |
 | Gemini 2.5 Flash | Google | 1 048 576 | tiktoken (approx.) |
+| Gemini 2.5 Flash-Lite | Google | 1 048 576 | tiktoken (approx.) |
 | Gemini 2.5 Pro | Google | 1 048 576 | tiktoken (approx.) |
+| Gemini 3.1 Pro Preview | Google | 1 048 576 | tiktoken (approx.) |
 | Claude Sonnet 4.5 | Anthropic | 200 000 | tiktoken (approx.) |
 
 ---
@@ -40,9 +42,9 @@ cd C:\Users\Júlio Kennedy\Documents\Kibble
 
 `start.ps1` will:
 1. Kill any process already on ports 8000 or 5173 (no duplicates).
-2. Install/activate the Python venv and pip dependencies.
-3. Install npm dependencies.
-4. Start FastAPI on `:8000` and Vite on `:5173`.
+2. Install dependencies only when the local environment is missing.
+3. Start FastAPI on `:8000` and Vite on `:5173` in the background.
+4. Return control to the terminal immediately. Logs are written to `.kibble-logs\`.
 
 ### Stop everything
 
@@ -74,6 +76,10 @@ cd frontend
 npm install        # first time only
 npm run dev        # Vite on :5173 with strictPort (no drift)
 ```
+
+Open `http://localhost:5173` after both processes are running. The frontend
+needs the backend at `http://localhost:8000`; otherwise model loading and
+estimates show an API unavailable message.
 
 ---
 

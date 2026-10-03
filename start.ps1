@@ -31,52 +31,46 @@ if (-not (Test-Path $VenvActivate)) {
     python -m venv (Join-Path $Root ".venv")
 }
 
-Write-Host "Installing backend dependencies..." -ForegroundColor Cyan
-& (Join-Path $Root ".venv\Scripts\pip.exe") install -q -r (Join-Path $Root "backend\requirements.txt")
+if (-not (Test-Path (Join-Path $Root ".venv\Lib\site-packages\fastapi"))) {
+    Write-Host "Installing backend dependencies..." -ForegroundColor Cyan
+    & (Join-Path $Root ".venv\Scripts\pip.exe") install -q -r (Join-Path $Root "backend\requirements.txt")
+}
 
 Write-Host "Starting FastAPI backend on :8000..." -ForegroundColor Cyan
-$BackendJob = Start-Job -ScriptBlock {
-    param($root)
-    & "$root\.venv\Scripts\uvicorn.exe" main:app --app-dir "$root\backend" --host 127.0.0.1 --port 8000
-} -ArgumentList $Root
+$LogDir = Join-Path $Root ".kibble-logs"
+New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
+Start-Process `
+    -FilePath (Join-Path $Root ".venv\Scripts\uvicorn.exe") `
+    -ArgumentList "main:app --app-dir `"$Root\backend`" --host 127.0.0.1 --port 8000" `
+    -WorkingDirectory $Root `
+    -RedirectStandardOutput (Join-Path $LogDir "backend.log") `
+    -RedirectStandardError (Join-Path $LogDir "backend-error.log") `
+    -WindowStyle Hidden | Out-Null
 
 # Wait a moment for the backend to bind
 Start-Sleep -Seconds 2
 
 # ── Start frontend ────────────────────────────────────────────────
-Write-Host "Installing frontend dependencies..." -ForegroundColor Cyan
-Push-Location (Join-Path $Root "frontend")
-npm install --silent
+if (-not (Test-Path (Join-Path $Root "frontend\node_modules\.bin\vite.cmd"))) {
+    Write-Host "Installing frontend dependencies..." -ForegroundColor Cyan
+    Push-Location (Join-Path $Root "frontend")
+    npm.cmd install --silent
+    Pop-Location
+}
 
 Write-Host "Starting Vite frontend on :5173..." -ForegroundColor Cyan
-$FrontendJob = Start-Job -ScriptBlock {
-    param($dir)
-    Set-Location $dir
-    npm run dev
-} -ArgumentList (Join-Path $Root "frontend")
-
-Pop-Location
+Start-Process `
+    -FilePath (Join-Path $Root "frontend\node_modules\.bin\vite.cmd") `
+    -ArgumentList "--host 127.0.0.1" `
+    -WorkingDirectory (Join-Path $Root "frontend") `
+    -RedirectStandardOutput (Join-Path $LogDir "frontend.log") `
+    -RedirectStandardError (Join-Path $LogDir "frontend-error.log") `
+    -WindowStyle Hidden | Out-Null
 
 Write-Host ""
 Write-Host "✅ Kibble is running:" -ForegroundColor Green
 Write-Host "   Frontend → http://localhost:5173" -ForegroundColor Cyan
 Write-Host "   Backend  → http://localhost:8000" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Press Ctrl+C to stop both servers, or run .\stop.ps1" -ForegroundColor DarkGray
-Write-Host ""
-
-# Keep script alive and stream logs
-try {
-    while ($true) {
-        Receive-Job $BackendJob  | ForEach-Object { Write-Host "[backend]  $_" -ForegroundColor DarkGray }
-        Receive-Job $FrontendJob | ForEach-Object { Write-Host "[frontend] $_" -ForegroundColor DarkGray }
-        Start-Sleep -Seconds 1
-    }
-} finally {
-    Write-Host "`nStopping servers..." -ForegroundColor Yellow
-    Stop-Job  $BackendJob, $FrontendJob  -ErrorAction SilentlyContinue
-    Remove-Job $BackendJob, $FrontendJob -ErrorAction SilentlyContinue
-    Kill-Port 8000
-    Kill-Port 5173
-    Write-Host "Done." -ForegroundColor Green
-}
+Write-Host "Run .\stop.ps1 to stop both servers." -ForegroundColor DarkGray
+Write-Host "Logs: .\.kibble-logs\" -ForegroundColor DarkGray
