@@ -22,3 +22,188 @@ body {
   min-height: 100vh;
   background: #071216;
 }
+
+/* ── Kibble Mascot Animations ── */
+@keyframes kibbleFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+}
+
+@keyframes kibbleMunch {
+  0%, 100% {
+    transform: translateY(0px) scale(1) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-2px) scale(1.04, 0.96) rotate(1.5deg);
+  }
+  50% {
+    transform: translateY(1px) scale(0.97, 1.03) rotate(-1deg);
+  }
+  75% {
+    transform: translateY(-1px) scale(1.03, 0.98) rotate(0.8deg);
+  }
+}
+
+@keyframes kibbleThink {
+  0%, 100% {
+    transform: translateY(0px) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(3deg);
+  }
+}
+
+@keyframes kibbleSleep {
+  0%, 100% {
+    transform: scale(1, 0.98);
+  }
+  50% {
+    transform: scale(1.03, 1.02);
+  }
+}
+
+@keyframes kibbleWobble {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.15) rotate(6deg); }
+  50% { transform: scale(1.1) rotate(-6deg); }
+  75% { transform: scale(1.05) rotate(3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes kibbleShadow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(0.82);
+    opacity: 0.35;
+  }
+}
+
+@keyframes cubeFly1 {
+  0% {
+    transform: translate(12px, -6px) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-10px, 4px) scale(0.9) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes cubeFly2 {
+  0% {
+    transform: translate(16px, 4px) scale(0.5) rotate(10deg);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-8px, -2px) scale(0.8) rotate(-35deg);
+    opacity: 0;
+  }
+}
+
+@keyframes kibbleZ {
+  0% {
+    transform: translate(0, 0) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(6px, -12px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.kibble-floating {
+  animation: kibbleFloat 3.2s ease-in-out infinite;
+}
+
+.kibble-munching {
+  animation: kibbleMunch 0.5s ease-in-out infinite;
+}
+
+.kibble-thinking {
+  animation: kibbleThink 2.8s ease-in-out infinite;
+}
+
+.kibble-sleeping {
+  animation: kibbleSleep 3.6s ease-in-out infinite;
+}
+
+.kibble-wobble {
+  animation: kibbleWobble 0.6s ease-out forwards;
+}
+
+.kibble-ground-shadow {
+  animation: kibbleShadow 3.2s ease-in-out infinite;
+}
+
+.kibble-cube-fly-1 {
+  animation: cubeFly1 0.8s ease-in-out infinite;
+}
+
+.kibble-cube-fly-2 {
+  animation: cubeFly2 0.9s ease-in-out infinite 0.35s;
+}
+
+.kibble-z-1 {
+  animation: kibbleZ 2.4s ease-out infinite;
+}
+
+.kibble-z-2 {
+  animation: kibbleZ 2.4s ease-out infinite 1.2s;
+}
+
+/* ── Deleting / Spitting Animations ── */
+@keyframes kibbleShiver {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-2px) rotate(-3deg) scale(0.97); }
+  50% { transform: translateY(2px) rotate(2deg) scale(0.98); }
+  75% { transform: translateY(-1px) rotate(-1deg); }
+}
+
+@keyframes cubeSpit {
+  0% {
+    transform: translate(-2px, 0) scale(0.9) rotate(0deg);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate(22px, -8px) scale(0.4) rotate(90deg);
+    opacity: 0;
+  }
+}
+
+.kibble-shivering {
+  animation: kibbleShiver 0.35s ease-in-out infinite;
+}
+
+.kibble-cube-spit {
+  animation: cubeSpit 0.65s ease-out infinite;
+}
+
+/* ── Overloaded / Quota Exceeded Panic ── */
+@keyframes kibblePanic {
+  0%, 100% { transform: scale(1) translateY(0); }
+  25% { transform: scale(1.08) translateY(-4px) rotate(-4deg); }
+  50% { transform: scale(0.94) translateY(2px) rotate(4deg); }
+  75% { transform: scale(1.05) translateY(-2px) rotate(-2deg); }
+}
+
+.kibble-panic {
+  animation: kibblePanic 0.3s ease-in-out infinite;
+}
+
+

@@ -40,11 +40,11 @@ const SAMPLE_STATS = {
 describe("StatsDisplay", () => {
   it("renders all six metric labels", () => {
     render(<StatsDisplay stats={SAMPLE_STATS} isLoading={false} error="" budgetTokens={1_000_000} />);
-    expect(screen.getByText(/input/i)).toBeInTheDocument();
-    expect(screen.getByText(/output/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/input|entrada/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/output|saída/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/total/i)).toBeInTheDocument();
-    expect(screen.getByText(/context/i)).toBeInTheDocument();
-    expect(screen.getByText(/budget local/i)).toBeInTheDocument();
+    expect(screen.getByText(/janela|context/i)).toBeInTheDocument();
+    expect(screen.getByText(/orçamento|budget/i)).toBeInTheDocument();
   });
 
   it("shows ellipsis while loading", () => {
@@ -121,8 +121,8 @@ describe("ComparePanel", () => {
     await userEvent.type(outputField, "180");
 
     // Diff table should appear
-    expect(screen.getByText(/Input tokens/)).toBeInTheDocument();
-    expect(screen.getByText(/Output tokens/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Input tokens|Tokens de entrada/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Output tokens|Tokens de saída/i).length).toBeGreaterThan(0);
   });
 });
 

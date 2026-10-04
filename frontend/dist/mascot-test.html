@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Kibble Mascot Visual Preview</title>
+  <style>
+    body {
+      background: #090914;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .title { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    .subtitle { color: #a5b4fc; font-size: 14px; margin-bottom: 30px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      width: 100%;
+    }
+    .card {
+      background: #121124;
+      border: 1px solid #29244d;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .card h4 { margin: 12px 0 4px; font-size: 15px; color: #f3f0ff; }
+    .card p { margin: 0; font-size: 12px; color: #818cf8; }
+  </style>
+</head>
+<body>
+  <div class="title">Kibble Mascot — Visual Reference Comparison (v2)</div>
+  <div class="subtitle">Silhueta orgânica, antena em espiral, esferas 3D e cubos de token</div>
+  
+  <div class="grid">
+    <div class="card">
+      
+    <svg viewBox="0 0 100 95" width="160" height="152" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="s-light" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="25%" stop-color="#e8dffd" />
+          <stop offset="65%" stop-color="#a488fd" />
+          <stop offset="90%" stop-color="#7352f2" />
+          <stop offset="100%" stop-color="#492dbd" />
+        </radialGradient>
+        <radialGradient id="s-mid" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ede4ff" />
+          <stop offset="22%" stop-color="#bfa6fc" />
+          <stop offset="60%" stop-color="#7956f4" />
+          <stop offset="88%" stop-color="#522ec2" />
+          <stop offset="100%" stop-color="#31178c" />
+        </radialGradient>
+        <radialGradient id="s-dark" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#c9b6fc" />
+          <stop offset="25%" stop-color="#8862f2" />
+          <stop offset="65%" stop-color="#542ebc" />
+          <stop offset="90%" stop-color="#371a8f" />
+          <stop offset="100%" stop-color="#210a5e" />
+        </radialGradient>
+        <radialGradient id="body-core" cx="54%" cy="46%" r="52%">
+          <stop offset="0%" stop-color="#b49cfd" />
+          <stop offset="40%" stop-color="#7c5af7" />
+          <stop offset="80%" stop-color="#502fc2" />
+          <stop offset="100%" stop-color="#341887" />
+        </radialGradient>
+        <radialGradient id="k-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#7c5af7" stop-opacity="0.4" />
+          <stop offset="70%" stop-color="#502fc2" stop-opacity="0.15" />
+          <stop offset="100%" stop-color="#341887" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="token-face-top" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="100%" stop-color="#ece5ff" />
+        </radialGradient>
+        <linearGradient id="token-face-left" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#dcd0fb" />
+          <stop offset="100%" stop-color="#b89df5" />
+        </linearGradient>
+        <linearGradient id="token-face-right" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#b494f7" />
+          <stop offset="100%" stop-color="#845ce6" />
+        </linearGradient>
+      </defs>
+
+      <!-- Ambient back glow -->
+      <circle cx="48" cy="50" r="32" fill="url(#k-glow)" />
+
+      <!-- Shadow underneath -->
+      <ellipse cx="48" cy="79" rx="20" ry="3.8" fill="#080417" opacity="0.65" />
+
+      <!-- Smooth organic body core underneath the particles for soft 3D mass -->
+      <path d="M 32 34 
+               C 42 27, 58 28, 64 36 
+               C 70 43, 70 54, 65 62 
+               C 60 70, 48 74, 38 72 
+               C 26 70, 21 58, 22 48 
+               C 23 40, 27 36, 32 34 Z" 
+            fill="url(#body-core)" />
+
+      <!-- Body spheres -->
+      <g id="body-group">
+        <circle cx="47.0" cy="24.5" r="3.4" fill="url(#s-light)" />
+<circle cx="45.5" cy="19.5" r="3.4" fill="url(#s-light)" />
+<circle cx="45.0" cy="14.5" r="3.6" fill="url(#s-light)" />
+<circle cx="48.5" cy="10.5" r="3.8" fill="url(#s-light)" />
+<circle cx="53.5" cy="11.5" r="3.2" fill="url(#s-light)" />
+<circle cx="40.0" cy="26.5" r="3.6" fill="url(#s-light)" />
+<circle cx="34.0" cy="30.5" r="3.8" fill="url(#s-light)" />
+<circle cx="53.0" cy="26.0" r="3.5" fill="url(#s-light)" />
+<circle cx="59.0" cy="28.5" r="3.3" fill="url(#s-light)" />
+<circle cx="64.5" cy="33.0" r="3.0" fill="url(#s-light)" />
+<circle cx="28.5" cy="35.5" r="4.0" fill="url(#s-light)" />
+<circle cx="24.5" cy="42.0" r="4.2" fill="url(#s-mid)" />
+<circle cx="22.0" cy="49.0" r="4.4" fill="url(#s-mid)" />
+<circle cx="22.5" cy="56.5" r="4.4" fill="url(#s-dark)" />
+<circle cx="25.5" cy="63.5" r="4.2" fill="url(#s-dark)" />
+<circle cx="30.0" cy="69.5" r="4.0" fill="url(#s-dark)" />
+<circle cx="36.0" cy="74.0" r="3.8" fill="url(#s-dark)" />
+<circle cx="33.0" cy="39.0" r="4.2" fill="url(#s-light)" />
+<circle cx="30.5" cy="46.5" r="4.5" fill="url(#s-mid)" />
+<circle cx="29.5" cy="54.5" r="4.6" fill="url(#s-mid)" />
+<circle cx="34.0" cy="62.0" r="4.4" fill="url(#s-dark)" />
+<circle cx="37.0" cy="46.0" r="4.4" fill="url(#s-light)" />
+<circle cx="37.5" cy="54.5" r="4.5" fill="url(#s-mid)" />
+<circle cx="42.5" cy="75.5" r="3.7" fill="url(#s-dark)" />
+<circle cx="48.5" cy="75.0" r="3.6" fill="url(#s-dark)" />
+<circle cx="54.5" cy="72.5" r="3.5" fill="url(#s-dark)" />
+<circle cx="60.5" cy="68.0" r="3.3" fill="url(#s-dark)" />
+<circle cx="68.0" cy="38.5" r="2.8" fill="url(#s-light)" />
+<circle cx="70.0" cy="45.0" r="2.7" fill="url(#s-light)" />
+<circle cx="67.5" cy="58.0" r="3.0" fill="url(#s-mid)" />
+<circle cx="64.0" cy="63.5" r="3.2" fill="url(#s-mid)" />
+<circle cx="46.0" cy="33.0" r="3.8" fill="url(#s-light)" />
+<circle cx="52.5" cy="33.5" r="3.7" fill="url(#s-light)" />
+<circle cx="43.5" cy="63.0" r="4.2" fill="url(#s-dark)" />
+<circle cx="50.0" cy="64.0" r="4.0" fill="url(#s-dark)" />
+<circle cx="56.5" cy="62.5" r="3.6" fill="url(#s-mid)" />
+<circle cx="18.5" cy="58.0" r="1.8" fill="url(#s-dark)" />
+<circle cx="20.0" cy="65.5" r="1.6" fill="url(#s-dark)" />
+<circle cx="71.5" cy="51.0" r="1.8" fill="url(#s-mid)" />
+
+      </g>
+
+      <!-- Soft cheek blushes -->
+      <ellipse cx="37" cy="50" rx="3.2" ry="2.0" fill="#ec4899" opacity="0.4" />
+      <ellipse cx="67" cy="47" rx="3.2" ry="2.0" fill="#ec4899" opacity="0.4" />
+
+      
+        <!-- EYES -->
+        <circle cx="45" cy="46" r="4.2" fill="#0d061c" />
+        <circle cx="43.8" cy="44.5" r="1.6" fill="#ffffff" />
+        <circle cx="61.5" cy="43.5" r="4.2" fill="#0d061c" />
+        <circle cx="60.3" cy="42" r="1.6" fill="#ffffff" />
+        <!-- MOUTH (curved open smile munching cube) -->
+        <path d="M 52 49 Q 56.5 54 62 48" fill="none" stroke="#0d061c" stroke-width="2.6" stroke-linecap="round" />
+        <path d="M 53 49.5 Q 57 55 62 49 Z" fill="#0d061c" />
+        <!-- 3D CUBE AT MOUTH -->
+        <g transform="translate(60, 42) rotate(10) scale(0.95)">
+          <path d="M 2 8 L 8 13 L 8 20 L 2 15 Z" fill="url(#token-face-left)" />
+          <path d="M 8 13 L 15 9 L 15 16 L 8 20 Z" fill="url(#token-face-right)" />
+          <path d="M 2 8 L 8 3 L 15 9 L 8 13 Z" fill="url(#token-face-top)" />
+        </g>
+        <!-- Floating token crumbs -->
+        <g transform="translate(76, 38) rotate(16) scale(0.55)">
+          <path d="M 2 8 L 8 13 L 8 20 L 2 15 Z" fill="url(#token-face-left)" />
+          <path d="M 8 13 L 15 9 L 15 16 L 8 20 Z" fill="url(#token-face-right)" />
+          <path d="M 2 8 L 8 3 L 15 9 L 8 13 Z" fill="url(#token-face-top)" />
+        </g>
+        <g transform="translate(82, 49) rotate(-8) scale(0.65)">
+          <path d="M 2 8 L 8 13 L 8 20 L 2 15 Z" fill="url(#token-face-left)" />
+          <path d="M 8 13 L 15 9 L 15 16 L 8 20 Z" fill="url(#token-face-right)" />
+          <path d="M 2 8 L 8 3 L 15 9 L 8 13 Z" fill="url(#token-face-top)" />
+        </g>
+        <g transform="translate(75, 59) rotate(22) scale(0.48)">
+          <path d="M 2 8 L 8 13 L 8 20 L 2 15 Z" fill="url(#token-face-left)" />
+          <path d="M 8 13 L 15 9 L 15 16 L 8 20 Z" fill="url(#token-face-right)" />
+          <path d="M 2 8 L 8 3 L 15 9 L 8 13 Z" fill="url(#token-face-top)" />
+        </g>
+        
+    </svg>
+    
+      <h4>Comendo Tokens</h4>
+      <p>Mordendo cubo 3D + farelos</p>
+    </div>
+    <div class="card">
+      
+    <svg viewBox="0 0 100 95" width="160" height="152" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="s-light" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="25%" stop-color="#e8dffd" />
+          <stop offset="65%" stop-color="#a488fd" />
+          <stop offset="90%" stop-color="#7352f2" />
+          <stop offset="100%" stop-color="#492dbd" />
+        </radialGradient>
+        <radialGradient id="s-mid" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ede4ff" />
+          <stop offset="22%" stop-color="#bfa6fc" />
+          <stop offset="60%" stop-color="#7956f4" />
+          <stop offset="88%" stop-color="#522ec2" />
+          <stop offset="100%" stop-color="#31178c" />
+        </radialGradient>
+        <radialGradient id="s-dark" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#c9b6fc" />
+          <stop offset="25%" stop-color="#8862f2" />
+          <stop offset="65%" stop-color="#542ebc" />
+          <stop offset="90%" stop-color="#371a8f" />
+          <stop offset="100%" stop-color="#210a5e" />
+        </radialGradient>
+        <radialGradient id="body-core" cx="54%" cy="46%" r="52%">
+          <stop offset="0%" stop-color="#b49cfd" />
+          <stop offset="40%" stop-color="#7c5af7" />
+          <stop offset="80%" stop-color="#502fc2" />
+          <stop offset="100%" stop-color="#341887" />
+        </radialGradient>
+        <radialGradient id="k-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#7c5af7" stop-opacity="0.4" />
+          <stop offset="70%" stop-color="#502fc2" stop-opacity="0.15" />
+          <stop offset="100%" stop-color="#341887" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="token-face-top" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="100%" stop-color="#ece5ff" />
+        </radialGradient>
+        <linearGradient id="token-face-left" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#dcd0fb" />
+          <stop offset="100%" stop-color="#b89df5" />
+        </linearGradient>
+        <linearGradient id="token-face-right" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#b494f7" />
+          <stop offset="100%" stop-color="#845ce6" />
+        </linearGradient>
+      </defs>
+
+      <!-- Ambient back glow -->
+      <circle cx="48" cy="50" r="32" fill="url(#k-glow)" />
+
+      <!-- Shadow underneath -->
+      <ellipse cx="48" cy="79" rx="20" ry="3.8" fill="#080417" opacity="0.65" />
+
+      <!-- Smooth organic body core underneath the particles for soft 3D mass -->
+      <path d="M 32 34 
+               C 42 27, 58 28, 64 36 
+               C 70 43, 70 54, 65 62 
+               C 60 70, 48 74, 38 72 
+               C 26 70, 21 58, 22 48 
+               C 23 40, 27 36, 32 34 Z" 
+            fill="url(#body-core)" />
+
+      <!-- Body spheres -->
+      <g id="body-group">
+        <circle cx="47.0" cy="24.5" r="3.4" fill="url(#s-light)" />
+<circle cx="45.5" cy="19.5" r="3.4" fill="url(#s-light)" />
+<circle cx="45.0" cy="14.5" r="3.6" fill="url(#s-light)" />
+<circle cx="48.5" cy="10.5" r="3.8" fill="url(#s-light)" />
+<circle cx="53.5" cy="11.5" r="3.2" fill="url(#s-light)" />
+<circle cx="40.0" cy="26.5" r="3.6" fill="url(#s-light)" />
+<circle cx="34.0" cy="30.5" r="3.8" fill="url(#s-light)" />
+<circle cx="53.0" cy="26.0" r="3.5" fill="url(#s-light)" />
+<circle cx="59.0" cy="28.5" r="3.3" fill="url(#s-light)" />
+<circle cx="64.5" cy="33.0" r="3.0" fill="url(#s-light)" />
+<circle cx="28.5" cy="35.5" r="4.0" fill="url(#s-light)" />
+<circle cx="24.5" cy="42.0" r="4.2" fill="url(#s-mid)" />
+<circle cx="22.0" cy="49.0" r="4.4" fill="url(#s-mid)" />
+<circle cx="22.5" cy="56.5" r="4.4" fill="url(#s-dark)" />
+<circle cx="25.5" cy="63.5" r="4.2" fill="url(#s-dark)" />
+<circle cx="30.0" cy="69.5" r="4.0" fill="url(#s-dark)" />
+<circle cx="36.0" cy="74.0" r="3.8" fill="url(#s-dark)" />
+<circle cx="33.0" cy="39.0" r="4.2" fill="url(#s-light)" />
+<circle cx="30.5" cy="46.5" r="4.5" fill="url(#s-mid)" />
+<circle cx="29.5" cy="54.5" r="4.6" fill="url(#s-mid)" />
+<circle cx="34.0" cy="62.0" r="4.4" fill="url(#s-dark)" />
+<circle cx="37.0" cy="46.0" r="4.4" fill="url(#s-light)" />
+<circle cx="37.5" cy="54.5" r="4.5" fill="url(#s-mid)" />
+<circle cx="42.5" cy="75.5" r="3.7" fill="url(#s-dark)" />
+<circle cx="48.5" cy="75.0" r="3.6" fill="url(#s-dark)" />
+<circle cx="54.5" cy="72.5" r="3.5" fill="url(#s-dark)" />
+<circle cx="60.5" cy="68.0" r="3.3" fill="url(#s-dark)" />
+<circle cx="68.0" cy="38.5" r="2.8" fill="url(#s-light)" />
+<circle cx="70.0" cy="45.0" r="2.7" fill="url(#s-light)" />
+<circle cx="67.5" cy="58.0" r="3.0" fill="url(#s-mid)" />
+<circle cx="64.0" cy="63.5" r="3.2" fill="url(#s-mid)" />
+<circle cx="46.0" cy="33.0" r="3.8" fill="url(#s-light)" />
+<circle cx="52.5" cy="33.5" r="3.7" fill="url(#s-light)" />
+<circle cx="43.5" cy="63.0" r="4.2" fill="url(#s-dark)" />
+<circle cx="50.0" cy="64.0" r="4.0" fill="url(#s-dark)" />
+<circle cx="56.5" cy="62.5" r="3.6" fill="url(#s-mid)" />
+<circle cx="18.5" cy="58.0" r="1.8" fill="url(#s-dark)" />
+<circle cx="20.0" cy="65.5" r="1.6" fill="url(#s-dark)" />
+<circle cx="71.5" cy="51.0" r="1.8" fill="url(#s-mid)" />
+
+      </g>
+
+      <!-- Soft cheek blushes -->
+      <ellipse cx="37" cy="50" rx="3.2" ry="2.0" fill="#ec4899" opacity="0.4" />
+      <ellipse cx="67" cy="47" rx="3.2" ry="2.0" fill="#ec4899" opacity="0.4" />
+
+      
+        <circle cx="45" cy="46" r="4.2" fill="#0d061c" />
+        <circle cx="43.8" cy="44.5" r="1.6" fill="#ffffff" />
+        <circle cx="61.5" cy="43.5" r="4.2" fill="#0d061c" />
+        <circle cx="60.3" cy="42" r="1.6" fill="#ffffff" />
+        <path d="M 50 51 Q 56 56 61 51" fill="none" stroke="#0d061c" stroke-width="2.4" stroke-linecap="round" />
+        <g transform="translate(78, 44) rotate(12) scale(0.7)">
+          <path d="M 2 8 L 8 13 L 8 20 L 2 15 Z" fill="url(#token-face-left)" />
+          <path d="M 8 13 L 15 9 L 15 16 L 8 20 Z" fill="url(#token-face-right)" />
+          <path d="M 2 8 L 8 3 L 15 9 L 8 13 Z" fill="url(#token-face-top)" />
+        </g>
+        
+    </svg>
+    
+      <h4>Parado (Idle)</h4>
+      <p>Olhando amigável + cubo flutuando</p>
+    </div>
+    <div class="card">
+      
+    <svg viewBox="0 0 100 95" width="160" height="152" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="s-light" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="25%" stop-color="#e8dffd" />
+          <stop offset="65%" stop-color="#a488fd" />
+          <stop offset="90%" stop-color="#7352f2" />
+          <stop offset="100%" stop-color="#492dbd" />
+        </radialGradient>
+        <radialGradient id="s-mid" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ede4ff" />
+          <stop offset="22%" stop-color="#bfa6fc" />
+          <stop offset="60%" stop-color="#7956f4" />
+          <stop offset="88%" stop-color="#522ec2" />
+          <stop offset="100%" stop-color="#31178c" />
+        </radialGradient>
+        <radialGradient id="s-dark" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#c9b6fc" />
+          <stop offset="25%" stop-color="#8862f2" />
+          <stop offset="65%" stop-color="#542ebc" />
+          <stop offset="90%" stop-color="#371a8f" />
+          <stop offset="100%" stop-color="#210a5e" />
+        </radialGradient>
+        <radialGradient id="body-core" cx="54%" cy="46%" r="52%">
+          <stop offset="0%" stop-color="#b49cfd" />
+          <stop offset="40%" stop-color="#7c5af7" />
+          <stop offset="80%" stop-color="#502fc2" />
+          <stop offset="100%" stop-color="#341887" />
+        </radialGradient>
+        <radialGradient id="k-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#7c5af7" stop-opacity="0.4" />
+          <stop offset="70%" stop-color="#502fc2" stop-opacity="0.15" />
+          <stop offset="100%" stop-color="#341887" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="token-face-top" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="100%" stop-color="#ece5ff" />
+        </radialGradient>
+        <linearGradient id="token-face-left" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#dcd0fb" />
+          <stop offset="100%" stop-color="#b89df5" />
+        </linearGradient>
+        <linearGradient id="token-face-right" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#b494f7" />
+          <stop offset="100%" stop-color="#845ce6" />
+        </linearGradient>
+      </defs>
+
+      <!-- Ambient back glow -->
+      <circle cx="48" cy="50" r="32" fill="url(#k-glow)" />
+
+      <!-- Shadow underneath -->
+      <ellipse cx="48" cy="79" rx="20" ry="3.8" fill="#080417" opacity="0.65" />
+
+      <!-- Smooth organic body core underneath the particles for soft 3D mass -->
+      <path d="M 32 34 
+               C 42 27, 58 28, 64 36 
+               C 70 43, 70 54, 65 62 
+               C 60 70, 48 74, 38 72 
+               C 26 70, 21 58, 22 48 
+               C 23 40, 27 36, 32 34 Z" 
+            fill="url(#body-core)" />
+
+      <!-- Body spheres -->
+      <g id="body-group">
+        <circle cx="47.0" cy="24.5" r="3.4" fill="url(#s-light)" />
+<circle cx="45.5" cy="19.5" r="3.4" fill="url(#s-light)" />
+<circle cx="45.0" cy="14.5" r="3.6" fill="url(#s-light)" />
+<circle cx="48.5" cy="10.5" r="3.8" fill="url(#s-light)" />
+<circle cx="53.5" cy="11.5" r="3.2" fill="url(#s-light)" />
+<circle cx="40.0" cy="26.5" r="3.6" fill="url(#s-light)" />
+<circle cx="34.0" cy="30.5" r="3.8" fill="url(#s-light)" />
+<circle cx="53.0" cy="26.0" r="3.5" fill="url(#s-light)" />
+<circle cx="59.0" cy="28.5" r="3.3" fill="url(#s-light)" />
+<circle cx="64.5" cy="33.0" r="3.0" fill="url(#s-light)" />
+<circle cx="28.5" cy="35.5" r="4.0" fill="url(#s-light)" />
+<circle cx="24.5" cy="42.0" r="4.2" fill="url(#s-mid)" />
+<circle cx="22.0" cy="49.0" r="4.4" fill="url(#s-mid)" />
+<circle cx="22.5" cy="56.5" r="4.4" fill="url(#s-dark)" />
+<circle cx="25.5" cy="63.5" r="4.2" fill="url(#s-dark)" />
+<circle cx="30.0" cy="69.5" r="4.0" fill="url(#s-dark)" />
+<circle cx="36.0" cy="74.0" r="3.8" fill="url(#s-dark)" />
+<circle cx="33.0" cy="39.0" r="4.2" fill="url(#s-light)" />
+<circle cx="30.5" cy="46.5" r="4.5" fill="url(#s-mid)" />
+<circle cx="29.5" cy="54.5" r="4.6" fill="url(#s-mid)" />
+<circle cx="34.0" cy="62.0" r="4.4" fill="url(#s-dark)" />
+<circle cx="37.0" cy="46.0" r="4.4" fill="url(#s-light)" />
+<circle cx="37.5" cy="54.5" r="4.5" fill="url(#s-mid)" />
+<circle cx="42.5" cy="75.5" r="3.7" fill="url(#s-dark)" />
+<circle cx="48.5" cy="75.0" r="3.6" fill="url(#s-dark)" />
+<circle cx="54.5" cy="72.5" r="3.5" fill="url(#s-dark)" />
+<circle cx="60.5" cy="68.0" r="3.3" fill="url(#s-dark)" />
+<circle cx="68.0" cy="38.5" r="2.8" fill="url(#s-light)" />
+<circle cx="70.0" cy="45.0" r="2.7" fill="url(#s-light)" />
+<circle cx="67.5" cy="58.0" r="3.0" fill="url(#s-mid)" />
+<circle cx="64.0" cy="63.5" r="3.2" fill="url(#s-mid)" />
+<circle cx="46.0" cy="33.0" r="3.8" fill="url(#s-light)" />
+<circle cx="52.5" cy="33.5" r="3.7" fill="url(#s-light)" />
+<circle cx="43.5" cy="63.0" r="4.2" fill="url(#s-dark)" />
+<circle cx="50.0" cy="64.0" r="4.0" fill="url(#s-dark)" />
+<circle cx="56.5" cy="62.5" r="3.6" fill="url(#s-mid)" />
+<circle cx="18.5" cy="58.0" r="1.8" fill="url(#s-dark)" />
+<circle cx="20.0" cy="65.5" r="1.6" fill="url(#s-dark)" />
+<circle cx="71.5" cy="51.0" r="1.8" fill="url(#s-mid)" />
+
+      </g>
+
+      <!-- Soft cheek blushes -->
+      <ellipse cx="37" cy="50" rx="3.2" ry="2.0" fill="#ec4899" opacity="0.4" />
+      <ellipse cx="67" cy="47" rx="3.2" ry="2.0" fill="#ec4899" opacity="0.4" />
+
+      
+        <circle cx="46.5" cy="44" r="4.2" fill="#0d061c" />
+        <circle cx="46" cy="42.5" r="1.6" fill="#ffffff" />
+        <circle cx="63.5" cy="41.5" r="4.2" fill="#0d061c" />
+        <circle cx="63" cy="40" r="1.6" fill="#ffffff" />
+        <path d="M 52 52 Q 56 55 59 52" fill="none" stroke="#0d061c" stroke-width="2.2" stroke-linecap="round" />
+        <text x="65" y="22" fill="#d9c9ff" font-size="20" font-weight="900" font-family="system-ui" filter="drop-shadow(0 2px 8px #7c3aed)">?</text>
+        
+    </svg>
+    
+      <h4>Pensando</h4>
+      <p>Olhando para cima + '?' luminoso</p>
+    </div>
+    <div class="card">
+      
+    <svg viewBox="0 0 100 95" width="160" height="152" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="s-light" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="25%" stop-color="#e8dffd" />
+          <stop offset="65%" stop-color="#a488fd" />
+          <stop offset="90%" stop-color="#7352f2" />
+          <stop offset="100%" stop-color="#492dbd" />
+        </radialGradient>
+        <radialGradient id="s-mid" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ede4ff" />
+          <stop offset="22%" stop-color="#bfa6fc" />
+          <stop offset="60%" stop-color="#7956f4" />
+          <stop offset="88%" stop-color="#522ec2" />
+          <stop offset="100%" stop-color="#31178c" />
+        </radialGradient>
+        <radialGradient id="s-dark" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#c9b6fc" />
+          <stop offset="25%" stop-color="#8862f2" />
+          <stop offset="65%" stop-color="#542ebc" />
+          <stop offset="90%" stop-color="#371a8f" />
+          <stop offset="100%" stop-color="#210a5e" />
+        </radialGradient>
+        <radialGradient id="body-core" cx="54%" cy="46%" r="52%">
+          <stop offset="0%" stop-color="#b49cfd" />
+          <stop offset="40%" stop-color="#7c5af7" />
+          <stop offset="80%" stop-color="#502fc2" />
+          <stop offset="100%" stop-color="#341887" />
+        </radialGradient>
+        <radialGradient id="k-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#7c5af7" stop-opacity="0.4" />
+          <stop offset="70%" stop-color="#502fc2" stop-opacity="0.15" />
+          <stop offset="100%" stop-color="#341887" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="token-face-top" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="100%" stop-color="#ece5ff" />
+        </radialGradient>
+        <linearGradient id="token-face-left" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#dcd0fb" />
+          <stop offset="100%" stop-color="#b89df5" />
+        </linearGradient>
+        <linearGradient id="token-face-right" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#b494f7" />
+          <stop offset="100%" stop-color="#845ce6" />
+        </linearGradient>
+      </defs>
+
+      <!-- Ambient back glow -->
+      <circle cx="48" cy="50" r="32" fill="url(#k-glow)" />
+
+      <!-- Shadow underneath -->
+      <ellipse cx="48" cy="79" rx="20" ry="3.8" fill="#080417" opacity="0.65" />
+
+      <!-- Smooth organic body core underneath the particles for soft 3D mass -->
+      <path d="M 32 34 
+               C 42 27, 58 28, 64 36 
+               C 70 43, 70 54, 65 62 
+               C 60 70, 48 74, 38 72 
+               C 26 70, 21 58, 22 48 
+               C 23 40, 27 36, 32 34 Z" 
+            fill="url(#body-core)" />
+
+      <!-- Body spheres -->
+      <g id="body-group">
+        <circle cx="47.0" cy="24.5" r="3.4" fill="url(#s-light)" />
+<circle cx="45.5" cy="19.5" r="3.4" fill="url(#s-light)" />
+<circle cx="45.0" cy="14.5" r="3.6" fill="url(#s-light)" />
+<circle cx="48.5" cy="10.5" r="3.8" fill="url(#s-light)" />
+<circle cx="53.5" cy="11.5" r="3.2" fill="url(#s-light)" />
+<circle cx="40.0" cy="26.5" r="3.6" fill="url(#s-light)" />
+<circle cx="34.0" cy="30.5" r="3.8" fill="url(#s-light)" />
+<circle cx="53.0" cy="26.0" r="3.5" fill="url(#s-light)" />
+<circle cx="59.0" cy="28.5" r="3.3" fill="url(#s-light)" />
+<circle cx="64.5" cy="33.0" r="3.0" fill="url(#s-light)" />
+<circle cx="28.5" cy="35.5" r="4.0" fill="url(#s-light)" />
+<circle cx="24.5" cy="42.0" r="4.2" fill="url(#s-mid)" />
+<circle cx="22.0" cy="49.0" r="4.4" fill="url(#s-mid)" />
+<circle cx="22.5" cy="56.5" r="4.4" fill="url(#s-dark)" />
+<circle cx="25.5" cy="63.5" r="4.2" fill="url(#s-dark)" />
+<circle cx="30.0" cy="69.5" r="4.0" fill="url(#s-dark)" />
+<circle cx="36.0" cy="74.0" r="3.8" fill="url(#s-dark)" />
+<circle cx="33.0" cy="39.0" r="4.2" fill="url(#s-light)" />
+<circle cx="30.5" cy="46.5" r="4.5" fill="url(#s-mid)" />
+<circle cx="29.5" cy="54.5" r="4.6" fill="url(#s-mid)" />
+<circle cx="34.0" cy="62.0" r="4.4" fill="url(#s-dark)" />
+<circle cx="37.0" cy="46.0" r="4.4" fill="url(#s-light)" />
+<circle cx="37.5" cy="54.5" r="4.5" fill="url(#s-mid)" />
+<circle cx="42.5" cy="75.5" r="3.7" fill="url(#s-dark)" />
+<circle cx="48.5" cy="75.0" r="3.6" fill="url(#s-dark)" />
+<circle cx="54.5" cy="72.5" r="3.5" fill="url(#s-dark)" />
+<circle cx="60.5" cy="68.0" r="3.3" fill="url(#s-dark)" />
+<circle cx="68.0" cy="38.5" r="2.8" fill="url(#s-light)" />
+<circle cx="70.0" cy="45.0" r="2.7" fill="url(#s-light)" />
+<circle cx="67.5" cy="58.0" r="3.0" fill="url(#s-mid)" />
+<circle cx="64.0" cy="63.5" r="3.2" fill="url(#s-mid)" />
+<circle cx="46.0" cy="33.0" r="3.8" fill="url(#s-light)" />
+<circle cx="52.5" cy="33.5" r="3.7" fill="url(#s-light)" />
+<circle cx="43.5" cy="63.0" r="4.2" fill="url(#s-dark)" />
+<circle cx="50.0" cy="64.0" r="4.0" fill="url(#s-dark)" />
+<circle cx="56.5" cy="62.5" r="3.6" fill="url(#s-mid)" />
+<circle cx="18.5" cy="58.0" r="1.8" fill="url(#s-dark)" />
+<circle cx="20.0" cy="65.5" r="1.6" fill="url(#s-dark)" />
+<circle cx="71.5" cy="51.0" r="1.8" fill="url(#s-mid)" />
+
+      </g>
+
+      <!-- Soft cheek blushes -->
+      <ellipse cx="37" cy="50" rx="3.2" ry="2.0" fill="#ec4899" opacity="0.4" />
+      <ellipse cx="67" cy="47" rx="3.2" ry="2.0" fill="#ec4899" opacity="0.4" />
+
+      
+        <path d="M 40 47 Q 45 51 50 47" fill="none" stroke="#0d061c" stroke-width="2.6" stroke-linecap="round" />
+        <path d="M 57 45 Q 62 49 67 45" fill="none" stroke="#0d061c" stroke-width="2.6" stroke-linecap="round" />
+        <path d="M 51 51 Q 53 53.5 55 51 Q 57 53.5 59 51" fill="none" stroke="#0d061c" stroke-width="1.8" stroke-linecap="round" />
+        <text x="67" y="27" fill="#a78bfa" font-size="14" font-weight="800" font-family="system-ui">z</text>
+        <text x="75" y="19" fill="#c4b5fd" font-size="18" font-weight="900" font-family="system-ui">Z</text>
+        
+    </svg>
+    
+      <h4>Dormindo</h4>
+      <p>Olhos serenos + 'Z' flutuando</p>
+    </div>
+    <div class="card">
+      
+    <svg viewBox="0 0 100 95" width="160" height="152" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="s-light" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="25%" stop-color="#e8dffd" />
+          <stop offset="65%" stop-color="#a488fd" />
+          <stop offset="90%" stop-color="#7352f2" />
+          <stop offset="100%" stop-color="#492dbd" />
+        </radialGradient>
+        <radialGradient id="s-mid" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ede4ff" />
+          <stop offset="22%" stop-color="#bfa6fc" />
+          <stop offset="60%" stop-color="#7956f4" />
+          <stop offset="88%" stop-color="#522ec2" />
+          <stop offset="100%" stop-color="#31178c" />
+        </radialGradient>
+        <radialGradient id="s-dark" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#c9b6fc" />
+          <stop offset="25%" stop-color="#8862f2" />
+          <stop offset="65%" stop-color="#542ebc" />
+          <stop offset="90%" stop-color="#371a8f" />
+          <stop offset="100%" stop-color="#210a5e" />
+        </radialGradient>
+        <radialGradient id="body-core" cx="54%" cy="46%" r="52%">
+          <stop offset="0%" stop-color="#b49cfd" />
+          <stop offset="40%" stop-color="#7c5af7" />
+          <stop offset="80%" stop-color="#502fc2" />
+          <stop offset="100%" stop-color="#341887" />
+        </radialGradient>
+        <radialGradient id="k-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#7c5af7" stop-opacity="0.4" />
+          <stop offset="70%" stop-color="#502fc2" stop-opacity="0.15" />
+          <stop offset="100%" stop-color="#341887" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="token-face-top" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#ffffff" />
+          <stop offset="100%" stop-color="#ece5ff" />
+        </radialGradient>
+        <linearGradient id="token-face-left" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#dcd0fb" />
+          <stop offset="100%" stop-color="#b89df5" />
+        </linearGradient>
+        <linearGradient id="token-face-right" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#b494f7" />
+          <stop offset="100%" stop-color="#845ce6" />
+        </linearGradient>
+      </defs>
+
+      <!-- Ambient back glow -->
+      <circle cx="48" cy="50" r="32" fill="url(#k-glow)" />
+
+      <!-- Shadow underneath -->
+      <ellipse cx="48" cy="79" rx="20" ry="3.8" fill="#080417" opacity="0.65" />
+
+      <!-- Smooth organic body core underneath the particles for soft 3D mass -->
+      <path d="M 32 34 
+               C 42 27, 58 28, 64 36 
+               C 70 43, 70 54, 65 62 
+               C 60 70, 48 74, 38 72 
+               C 26 70, 21 58, 22 48 
+               C 23 40, 27 36, 32 34 Z" 
+            fill="url(#body-core)" />
+
+      <!-- Body spheres -->
+      <g id="body-group">
+        <circle cx="47.0" cy="24.5" r="3.4" fill="url(#s-light)" />
+<circle cx="45.5" cy="19.5" r="3.4" fill="url(#s-light)" />
+<circle cx="45.0" cy="14.5" r="3.6" fill="url(#s-light)" />
+<circle cx="48.5" cy="10.5" r="3.8" fill="url(#s-light)" />
+<circle cx="53.5" cy="11.5" r="3.2" fill="url(#s-light)" />
+<circle cx="40.0" cy="26.5" r="3.6" fill="url(#s-light)" />
+<circle cx="34.0" cy="30.5" r="3.8" fill="url(#s-light)" />
+<circle cx="53.0" cy="26.0" r="3.5" fill="url(#s-light)" />
+<circle cx="59.0" cy="28.5" r="3.3" fill="url(#s-light)" />
+<circle cx="64.5" cy="33.0" r="3.0" fill="url(#s-light)" />
+<circle cx="28.5" cy="35.5" r="4.0" fill="url(#s-light)" />
+<circle cx="24.5" cy="42.0" r="4.2" fill="url(#s-mid)" />
+<circle cx="22.0" cy="49.0" r="4.4" fill="url(#s-mid)" />
+<circle cx="22.5" cy="56.5" r="4.4" fill="url(#s-dark)" />
+<circle cx="25.5" cy="63.5" r="4.2" fill="url(#s-dark)" />
+<circle cx="30.0" cy="69.5" r="4.0" fill="url(#s-dark)" />
+<circle cx="36.0" cy="74.0" r="3.8" fill="url(#s-dark)" />
+<circle cx="33.0" cy="39.0" r="4.2" fill="url(#s-light)" />
+<circle cx="30.5" cy="46.5" r="4.5" fill="url(#s-mid)" />
+<circle cx="29.5" cy="54.5" r="4.6" fill="url(#s-mid)" />
+<circle cx="34.0" cy="62.0" r="4.4" fill="url(#s-dark)" />
+<circle cx="37.0" cy="46.0" r="4.4" fill="url(#s-light)" />
+<circle cx="37.5" cy="54.5" r="4.5" fill="url(#s-mid)" />
+<circle cx="42.5" cy="75.5" r="3.7" fill="url(#s-dark)" />
+<circle cx="48.5" cy="75.0" r="3.6" fill="url(#s-dark)" />
+<circle cx="54.5" cy="72.5" r="3.5" fill="url(#s-dark)" />
+<circle cx="60.5" cy="68.0" r="3.3" fill="url(#s-dark)" />
+<circle cx="68.0" cy="38.5" r="2.8" fill="url(#s-light)" />
+<circle cx="70.0" cy="45.0" r="2.7" fill="url(#s-light)" />
+<circle cx="67.5" cy="58.0" r="3.0" fill="url(#s-mid)" />
+<circle cx="64.0" cy="63.5" r="3.2" fill="url(#s-mid)" />
+<circle cx="46.0" cy="33.0" r="3.8" fill="url(#s-light)" />
+<circle cx="52.5" cy="33.5" r="3.7" fill="url(#s-light)" />
+<circle cx="43.5" cy="63.0" r="4.2" fill="url(#s-dark)" />
+<circle cx="50.0" cy="64.0" r="4.0" fill="url(#s-dark)" />
+<circle cx="56.5" cy="62.5" r="3.6" fill="url(#s-mid)" />
+<circle cx="18.5" cy="58.0" r="1.8" fill="url(#s-dark)" />
+<circle cx="20.0" cy="65.5" r="1.6" fill="url(#s-dark)" />
+<circle cx="71.5" cy="51.0" r="1.8" fill="url(#s-mid)" />
+
+      </g>
+
+      <!-- Soft cheek blushes -->
+      <ellipse cx="37" cy="50" rx="3.2" ry="2.0" fill="#ec4899" opacity="0.4" />
+      <ellipse cx="67" cy="47" rx="3.2" ry="2.0" fill="#ec4899" opacity="0.4" />
+
+      
+        <!-- Happy squint eyes -->
+        <path d="M 40 47 Q 45 42 50 47" fill="none" stroke="#0d061c" stroke-width="2.8" stroke-linecap="round" />
+        <path d="M 57 45 Q 62 40 67 45" fill="none" stroke="#0d061c" stroke-width="2.8" stroke-linecap="round" />
+        <!-- Happy open smile -->
+        <path d="M 51 50 Q 56 56 61 50 Z" fill="#0d061c" />
+        <!-- Rays -->
+        <line x1="28" y1="28" x2="22" y2="23" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" />
+        <line x1="24" y1="36" x2="18" y2="34" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" />
+        <line x1="72" y1="29" x2="78" y2="24" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" />
+        <line x1="75" y1="37" x2="81" y2="35" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" />
+        <!-- Tokens in tummy -->
+        <g transform="translate(41, 53) rotate(6) scale(0.65)" opacity="0.95">
+          <path d="M 2 8 L 8 13 L 8 20 L 2 15 Z" fill="url(#token-face-left)" />
+          <path d="M 8 13 L 15 9 L 15 16 L 8 20 Z" fill="url(#token-face-right)" />
+          <path d="M 2 8 L 8 3 L 15 9 L 8 13 Z" fill="url(#token-face-top)" />
+        </g>
+        <g transform="translate(53, 53) rotate(-8) scale(0.65)" opacity="0.95">
+          <path d="M 2 8 L 8 13 L 8 20 L 2 15 Z" fill="url(#token-face-left)" />
+          <path d="M 8 13 L 15 9 L 15 16 L 8 20 Z" fill="url(#token-face-right)" />
+          <path d="M 2 8 L 8 3 L 15 9 L 8 13 Z" fill="url(#token-face-top)" />
+        </g>
+        <g transform="translate(47, 61) rotate(4) scale(0.6)" opacity="0.95">
+          <path d="M 2 8 L 8 13 L 8 20 L 2 15 Z" fill="url(#token-face-left)" />
+          <path d="M 8 13 L 15 9 L 15 16 L 8 20 Z" fill="url(#token-face-right)" />
+          <path d="M 2 8 L 8 3 L 15 9 L 8 13 Z" fill="url(#token-face-top)" />
+        </g>
+        
+    </svg>
+    
+      <h4>Cheio de Tokens</h4>
+      <p>Cubos na barriga + sorriso</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -4,12 +4,16 @@ from pydantic import BaseModel, Field
 class EstimateRequest(BaseModel):
     prompt: str = Field(default="", max_length=1_000_000)
     system_prompt: str = Field(default="", max_length=100_000)
+    conversation_history: str = Field(default="", max_length=2_000_000)
     expected_output_tokens: int = Field(default=512, ge=0, le=1_000_000)
     model_id: str
 
 
 class EstimateResponse(BaseModel):
     input_tokens: int
+    system_tokens: int = 0
+    prompt_tokens: int = 0
+    context_tokens: int = 0
     output_tokens: int
     total_tokens: int
     # split costs

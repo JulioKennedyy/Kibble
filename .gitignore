@@ -1,1 +1,7 @@
 .kibble-logs/
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+.vite/
+user_prompt_full.txt

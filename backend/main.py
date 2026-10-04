@@ -33,6 +33,7 @@ def estimate(request: EstimateRequest) -> EstimateResponse:
             request.prompt,
             request.model_id,
             request.system_prompt,
+            request.conversation_history,
             request.expected_output_tokens,
         )
     except ValueError as error:

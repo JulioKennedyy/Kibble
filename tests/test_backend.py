@@ -23,13 +23,24 @@ from main import app
 client = TestClient(app)
 
 VALID_MODELS = [
+    # OpenAI
+    "gpt-6-astra",
+    "gpt-5.6-sol",
+    "gpt-5.6-luna",
     "gpt-5",
     "gpt-4o",
     "gpt-4o-mini",
+    # Google
+    "gemini-3.8-flash",
+    "gemini-3.1-pro",
     "gemini-2.5-flash",
     "gemini-2.5-flash-lite",
     "gemini-2.5-pro",
-    "gemini-3.1-pro-preview",
+    # Anthropic
+    "claude-fable-5-1",
+    "claude-opus-5-5",
+    "claude-sonnet-5-5",
+    "claude-haiku-4-5",
     "claude-sonnet-4-5",
 ]
 
@@ -131,11 +142,61 @@ def test_estimate_empty_prompt():
     assert r.status_code == 200
     d = r.json()
     assert d["total_tokens"] >= 0
-    # Newline separator between system_prompt and prompt is still encoded,
-    # so cost may be a tiny positive number rather than exactly 0.0
     assert d["cost"] >= 0.0
     assert d["output_tokens"] == 0
     assert d["output_cost"] == 0.0
+
+
+def test_estimate_with_conversation_history():
+    """Conversation history should add tokens to input and increase cost."""
+    # Without history
+    r1 = client.post("/api/estimate", json={
+        "prompt": "Hello",
+        "model_id": "gpt-4o",
+        "system_prompt": "",
+        "conversation_history": "",
+        "expected_output_tokens": 100,
+    })
+    # With history
+    r2 = client.post("/api/estimate", json={
+        "prompt": "Hello",
+        "model_id": "gpt-4o",
+        "system_prompt": "",
+        "conversation_history": "User: Hi\nAssistant: Hello! How can I help?\nUser: Tell me about Python.",
+        "expected_output_tokens": 100,
+    })
+    assert r1.status_code == 200
+    assert r2.status_code == 200
+    d1, d2 = r1.json(), r2.json()
+
+    # With history should have more input tokens
+    assert d2["input_tokens"] > d1["input_tokens"]
+    # Context tokens should be > 0 when history is provided
+    assert d2["context_tokens"] > 0
+    assert d1["context_tokens"] == 0
+    # Cost with history should be higher
+    assert d2["cost"] > d1["cost"]
+
+
+def test_estimate_response_has_breakdown_fields():
+    """Response should include system_tokens, prompt_tokens, context_tokens."""
+    r = client.post("/api/estimate", json={
+        "prompt": "Hello",
+        "model_id": "gpt-4o",
+        "system_prompt": "You are helpful.",
+        "conversation_history": "User: Hi",
+        "expected_output_tokens": 50,
+    })
+    assert r.status_code == 200
+    d = r.json()
+    assert "system_tokens" in d
+    assert "prompt_tokens" in d
+    assert "context_tokens" in d
+    assert d["system_tokens"] > 0
+    assert d["prompt_tokens"] > 0
+    assert d["context_tokens"] > 0
+    # Breakdown should sum to input_tokens
+    assert d["system_tokens"] + d["prompt_tokens"] + d["context_tokens"] == d["input_tokens"]
 
 
 def test_estimate_returns_tokenizer_fields():

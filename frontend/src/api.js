@@ -32,6 +32,7 @@ export async function fetchModels(signal) {
  * @param {string} prompt
  * @param {string} modelId
  * @param {string} systemPrompt
+ * @param {string} conversationHistory
  * @param {number} expectedOutputTokens
  * @param {AbortSignal} [signal]
  */
@@ -39,6 +40,7 @@ export async function estimatePrompt(
   prompt,
   modelId,
   systemPrompt,
+  conversationHistory,
   expectedOutputTokens,
   signal,
 ) {
@@ -55,6 +57,7 @@ export async function estimatePrompt(
         prompt,
         model_id: modelId,
         system_prompt: systemPrompt,
+        conversation_history: conversationHistory,
         expected_output_tokens: expectedOutputTokens,
       }),
       signal: controller.signal,
