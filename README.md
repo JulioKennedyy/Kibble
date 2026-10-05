@@ -1,157 +1,110 @@
 # Kibble
 
-> Local token & cost estimator for LLM prompts — dark teal UI, no API calls to providers.
+Estimador de tokens e custos para prompts de modelos de linguagem. O Kibble compara modelos, mostra o uso da janela de contexto e estima o custo antes de uma chamada real ao provedor.
 
-Kibble counts system prompt tokens + prompt tokens + expected output tokens, then applies per-provider pricing to give you an estimate **before** you run the request.
+O Kibble **não chama APIs da OpenAI, Google ou Anthropic**. No deploy atual, o texto é processado pela API do próprio Kibble e não é armazenado.
 
----
+## Arquitetura
 
-## ⚠️ Estimation caveats
+```text
+Navegador (React + Vite)
+          |
+          | HTTPS/JSON
+          v
+API (FastAPI + Pydantic)
+          |
+          +-- tiktoken o200k_base
+          +-- catálogo versionado de modelos e preços
+```
 
-| Item | Notes |
-|---|---|
-| **Tokenizer** | Uses `tiktoken o200k_base` (native for OpenAI GPT). For Gemini and Claude it is an **approximation** (±5–15 %). |
-| **Budget local** | Your planning target — **not** the provider account quota. |
-| **Final billing** | Depends on the provider tokenizer, cached tokens, tools, images, and actual generated output. |
+- Sem banco de dados, contas ou chaves de provedores.
+- Contagem nativa para modelos OpenAI que usam `o200k_base`.
+- Contagem aproximada para Gemini e Claude (pode variar cerca de 5–15%).
+- Custo indicativo: cache, imagens, ferramentas, contexto longo e a saída real podem alterar a cobrança.
 
----
-
-## Supported models
-
-| Model | Provider | Context window | Tokenizer |
-|---|---|---|---|
-| GPT-5 | OpenAI | 400 000 | tiktoken (exact) |
-| GPT-4o | OpenAI | 128 000 | tiktoken (exact) |
-| GPT-4o Mini | OpenAI | 128 000 | tiktoken (exact) |
-| Gemini 2.5 Flash | Google | 1 048 576 | tiktoken (approx.) |
-| Gemini 2.5 Flash-Lite | Google | 1 048 576 | tiktoken (approx.) |
-| Gemini 2.5 Pro | Google | 1 048 576 | tiktoken (approx.) |
-| Gemini 3.1 Pro Preview | Google | 1 048 576 | tiktoken (approx.) |
-| Claude Sonnet 4.5 | Anthropic | 200 000 | tiktoken (approx.) |
-
----
-
-## Quick start
-
-### One-command start (recommended)
+## Rodar localmente
 
 ```powershell
-cd C:\Users\Júlio Kennedy\Documents\Kibble
+cd "C:\Users\Júlio Kennedy\Documents\Kibble"
 .\start.ps1
 ```
 
-`start.ps1` will:
-1. Kill any process already on ports 8000 or 5173 (no duplicates).
-2. Install dependencies only when the local environment is missing.
-3. Start FastAPI on `:8000` and Vite on `:5173` in the background.
-4. Return control to the terminal immediately. Logs are written to `.kibble-logs\`.
-
-### Stop everything
+Abra `http://localhost:5173`. Para encerrar:
 
 ```powershell
 .\stop.ps1
 ```
 
----
-
-## Manual start
-
-### Backend
+### Inicialização manual
 
 ```powershell
-cd backend
-# First time only:
-python -m venv ..\.venv
-..\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+# backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r backend\requirements-dev.txt
+uvicorn main:app --app-dir backend --reload --port 8000
 
-# Every time:
-uvicorn main:app --reload --port 8000
-```
-
-### Frontend
-
-```powershell
+# frontend, em outro terminal
 cd frontend
-npm install        # first time only
-npm run dev        # Vite on :5173 with strictPort (no drift)
+npm ci
+npm run dev
 ```
 
-Open `http://localhost:5173` after both processes are running. The frontend
-needs the backend at `http://localhost:8000`; otherwise model loading and
-estimates show an API unavailable message.
+## Variáveis de ambiente
 
----
+O desenvolvimento local funciona sem criar um `.env`. As variáveis disponíveis estão em [.env.example](.env.example).
 
-## Environment variables
+| Variável | Padrão | Uso |
+|---|---:|---|
+| `VITE_API_URL` | `http://localhost:8000` | Endereço público da API |
+| `VITE_API_TIMEOUT_MS` | `75000` | Tolera o cold start do plano gratuito |
+| `KIBBLE_CORS_ORIGINS` | origens locais | Frontends autorizados, separados por vírgula |
+| `KIBBLE_RATE_LIMIT_PER_MINUTE` | `120` | Limite de estimativas por IP/instância |
+| `KIBBLE_MAX_TOTAL_INPUT_CHARS` | `500000` | Soma máxima dos três campos de texto |
+| `KIBBLE_MAX_REQUEST_BODY_BYTES` | `2100000` | Limite do corpo HTTP |
 
-Copy `.env.example` to `.env` (or `frontend/.env.local`).
-
-```powershell
-Copy-Item .env.example .env
-```
-
-> **Important:** Kibble does **not** call any provider API. No API keys are required or stored.
-
----
-
-## How to validate against real provider usage
-
-1. Send the same prompt to the provider's official API.
-2. Record `usage.input_tokens`/`prompt_tokens` and `usage.output_tokens`/`completion_tokens` from the response.
-3. Open the **Compare panel** in Kibble and paste the real values — it shows the diff per metric.
-4. Repeat with system prompt, conversation history, tools, and long responses — they all change the billed context.
-5. For production, replace the static price table (`backend/token_service.py`) with live pricing from the provider and store per-key usage readings.
-
----
-
-## Running tests
-
-### Backend (pytest)
+## Testes
 
 ```powershell
-cd C:\Users\Júlio Kennedy\Documents\Kibble
-.venv\Scripts\Activate.ps1
-pip install -r backend\requirements.txt
-pytest tests\ -v
-```
-
-### Frontend (Vitest)
-
-```powershell
+.\.venv\Scripts\python.exe -m pytest tests\test_backend.py -q
+.\.venv\Scripts\python.exe tests\validate_logic.py
 cd frontend
-npm install
-npm test
+npm.cmd test
+npm.cmd run build
 ```
 
----
+O GitHub Actions executa os mesmos testes em cada push e pull request.
 
-## Project structure
+## Publicação
 
-```
+O arquivo [render.yaml](render.yaml) cria automaticamente:
+
+1. Uma API FastAPI gratuita.
+2. Um site estático gratuito.
+3. A ligação de URL e CORS entre os dois serviços.
+4. Health check, cabeçalhos de segurança e deploy contínuo após o CI.
+
+Siga o guia completo em [DEPLOY.md](DEPLOY.md).
+
+## Estrutura
+
+```text
 Kibble/
-├── backend/
-│   ├── main.py            # FastAPI app (health, models, estimate)
-│   ├── models.py          # Pydantic schemas
-│   ├── token_service.py   # Model catalogue + tiktoken estimation
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── api.js
-│   │   ├── components/
-│   │   │   ├── KibbleMascot.jsx   # SVG dot-matrix mascot (idle/loading/error)
-│   │   │   ├── ModelTabs.jsx
-│   │   │   ├── StatsDisplay.jsx
-│   │   │   └── ComparePanel.jsx   # Paste real usage & compare
-│   │   └── test/
-│   │       ├── setup.js
-│   │       └── App.test.jsx
-│   ├── vite.config.js     # strictPort: true
-│   └── package.json
-├── tests/
-│   └── test_backend.py
-├── .env.example
-├── start.ps1              # Start both servers (kills duplicates first)
-└── stop.ps1               # Kill servers on :8000 and :5173
+├── backend/               # API, catálogo, limites e estimativa
+├── frontend/              # interface React e mascote SVG
+├── tests/                 # testes da API e validações matemáticas
+├── .github/workflows/     # integração contínua
+├── render.yaml            # infraestrutura do Render
+├── DEPLOY.md              # tutorial de publicação
+├── start.ps1
+└── stop.ps1
 ```
+
+## Manutenção do catálogo
+
+Preços de IA mudam com frequência. Ao atualizar `backend/token_service.py`:
+
+1. Confirme preço e contexto na documentação oficial do provedor.
+2. Atualize `last_updated`.
+3. Atualize `tests/validate_logic.py` quando houver um valor verificável.
+4. Rode a suíte completa antes de publicar.

@@ -1,7 +1,16 @@
 .kibble-logs/
+.venv/
+.env
+.env.*
+!.env.example
 __pycache__/
 *.pyc
+*.log
 .pytest_cache/
+.coverage
+.ruff_cache/
 node_modules/
 .vite/
+dist/
+coverage/
 user_prompt_full.txt

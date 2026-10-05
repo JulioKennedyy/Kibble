@@ -26,14 +26,24 @@ Kill-Port 5173
 
 # ── Start backend ─────────────────────────────────────────────────
 $VenvActivate = Join-Path $Root ".venv\Scripts\Activate.ps1"
+$Requirements = Join-Path $Root "backend\requirements-dev.txt"
+$RequirementsStamp = Join-Path $Root ".venv\.kibble-requirements.sha256"
 if (-not (Test-Path $VenvActivate)) {
     Write-Host "Creating Python venv..." -ForegroundColor Cyan
     python -m venv (Join-Path $Root ".venv")
 }
 
-if (-not (Test-Path (Join-Path $Root ".venv\Lib\site-packages\fastapi"))) {
+if (Test-Path $RequirementsStamp) {
+    $InstalledRequirementsHash = (Get-Content $RequirementsStamp -Raw).Trim()
+} else {
+    $InstalledRequirementsHash = ""
+}
+$RequirementsHash = (Get-FileHash $Requirements -Algorithm SHA256).Hash
+
+if ($InstalledRequirementsHash -ne $RequirementsHash) {
     Write-Host "Installing backend dependencies..." -ForegroundColor Cyan
-    & (Join-Path $Root ".venv\Scripts\pip.exe") install -q -r (Join-Path $Root "backend\requirements.txt")
+    & (Join-Path $Root ".venv\Scripts\pip.exe") install -q -r $Requirements
+    Set-Content -Path $RequirementsStamp -Value $RequirementsHash
 }
 
 Write-Host "Starting FastAPI backend on :8000..." -ForegroundColor Cyan

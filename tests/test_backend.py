@@ -12,6 +12,7 @@ Backend test suite — covers:
 """
 
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 import sys, os
@@ -19,6 +20,8 @@ import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "backend"))
 
 from main import app
+from config import allowed_origins
+from middleware import RateLimitMiddleware
 
 client = TestClient(app)
 
@@ -53,6 +56,72 @@ def test_health():
     r = client.get("/api/health")
     assert r.status_code == 200
     assert r.json()["status"] == "ok"
+
+
+def test_health_has_security_headers():
+    r = client.get("/api/health")
+    assert r.headers["x-content-type-options"] == "nosniff"
+    assert r.headers["x-frame-options"] == "DENY"
+
+
+def test_local_frontend_is_allowed_by_cors():
+    r = client.options(
+        "/api/estimate",
+        headers={
+            "Origin": "http://localhost:5173",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert r.status_code == 200
+    assert r.headers["access-control-allow-origin"] == "http://localhost:5173"
+
+
+def test_unknown_origin_is_not_allowed_by_cors():
+    r = client.options(
+        "/api/estimate",
+        headers={"Origin": "https://example.invalid", "Access-Control-Request-Method": "POST"},
+    )
+    assert "access-control-allow-origin" not in r.headers
+
+
+def test_production_origin_is_normalised_from_environment(monkeypatch):
+    monkeypatch.setenv("KIBBLE_CORS_ORIGINS", "kibble.example.com, https://app.example.com/")
+    assert "https://kibble.example.com" in allowed_origins()
+    assert "https://app.example.com" in allowed_origins()
+
+
+def test_rate_limit_returns_429_with_retry_header():
+    limited_app = FastAPI()
+    limited_app.add_middleware(RateLimitMiddleware, requests_per_minute=2)
+
+    @limited_app.post("/api/estimate")
+    def limited_estimate():
+        return {"ok": True}
+
+    limited_client = TestClient(limited_app)
+    assert limited_client.post("/api/estimate").status_code == 200
+    assert limited_client.post("/api/estimate").status_code == 200
+    response = limited_client.post("/api/estimate")
+    assert response.status_code == 429
+    assert response.headers["retry-after"] == "60"
+
+
+def test_request_body_limit():
+    r = client.post(
+        "/api/estimate",
+        content=b"x" * 2_100_001,
+        headers={"Content-Type": "application/json"},
+    )
+    assert r.status_code == 413
+
+
+def test_total_text_length_limit():
+    r = client.post(
+        "/api/estimate",
+        json={"prompt": "x" * 500_001, "model_id": "gpt-4o", "expected_output_tokens": 0},
+    )
+    assert r.status_code == 422
 
 
 # ---------------------------------------------------------------------------

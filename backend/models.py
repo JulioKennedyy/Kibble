@@ -1,12 +1,23 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
+
+from config import MAX_TOTAL_INPUT_CHARS
 
 
 class EstimateRequest(BaseModel):
-    prompt: str = Field(default="", max_length=1_000_000)
-    system_prompt: str = Field(default="", max_length=100_000)
-    conversation_history: str = Field(default="", max_length=2_000_000)
+    prompt: str = Field(default="", max_length=MAX_TOTAL_INPUT_CHARS)
+    system_prompt: str = Field(default="", max_length=MAX_TOTAL_INPUT_CHARS)
+    conversation_history: str = Field(default="", max_length=MAX_TOTAL_INPUT_CHARS)
     expected_output_tokens: int = Field(default=512, ge=0, le=1_000_000)
     model_id: str
+
+    @model_validator(mode="after")
+    def validate_total_input_size(self) -> "EstimateRequest":
+        total = len(self.prompt) + len(self.system_prompt) + len(self.conversation_history)
+        if total > MAX_TOTAL_INPUT_CHARS:
+            raise ValueError(
+                f"O total dos textos não pode passar de {MAX_TOTAL_INPUT_CHARS:,} caracteres."
+            )
+        return self
 
 
 class EstimateResponse(BaseModel):

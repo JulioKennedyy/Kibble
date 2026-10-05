@@ -30,6 +30,16 @@ from token_service import estimate_tokens, MODEL_CATALOGUE, _encoding
 
 VERIFIED_PRICES = {
     # OpenAI - https://openai.com/api/pricing
+    "gpt-5.6-sol": {
+        "input": 4.00,
+        "output": 20.00,
+        "context_window": 1_050_000,
+    },
+    "gpt-5.6-luna": {
+        "input": 0.20,
+        "output": 1.20,
+        "context_window": 1_050_000,
+    },
     "gpt-4o": {
         "input": 2.50,    # ERA $5.00 no Kibble -> DESATUALIZADO
         "output": 10.00,  # ERA $15.00 no Kibble -> DESATUALIZADO

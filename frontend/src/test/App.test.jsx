@@ -8,8 +8,7 @@
  *   - ComparePanel opens/closes and shows diff
  *   - api.js: happy path (mocked fetch)
  *   - api.js: API error (400) throws descriptive message
- *   - api.js: fetch TypeError → "API unavailable" message
- *   - api.js: timeout abort → "took too long" message
+ *   - api.js: fetch TypeError → friendly unavailable message
  *   - App: debounce (estimate not called immediately on typing)
  *   - App: model switch triggers new estimate
  */
@@ -22,6 +21,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { StatsDisplay } from "../components/StatsDisplay";
 import { ModelTabs, FALLBACK_MODELS } from "../components/ModelTabs";
 import { ComparePanel } from "../components/ComparePanel";
+import { KibbleCornerCompanion } from "../components/KibbleCornerCompanion";
+import { KibbleMascot } from "../components/KibbleMascot";
 
 // ─── Helpers ─────────────────────────────────────────────────────
 const SAMPLE_STATS = {
@@ -127,6 +128,65 @@ describe("ComparePanel", () => {
 });
 
 // ─── api.js ──────────────────────────────────────────────────────
+describe("KibbleCornerCompanion", () => {
+  const props = {
+    isTyping: false,
+    isDeleting: false,
+    isLoading: false,
+    stats: { total_tokens: 0, context_percent: 0 },
+    budgetTokens: 0,
+    isSleepy: false,
+    hasText: false,
+    error: "",
+  };
+
+  it("shows a friendly empty-state message", () => {
+    render(<KibbleCornerCompanion {...props} />);
+    expect(screen.getByText(/cole um prompt/i)).toBeInTheDocument();
+  });
+
+  it("can be minimized", async () => {
+    render(<KibbleCornerCompanion {...props} />);
+    await userEvent.click(screen.getByRole("button", { name: /minimizar mascote/i }));
+    expect(screen.getByRole("button", { name: /mostrar mascote/i })).toBeInTheDocument();
+  });
+
+  it("uses a full-state message when the token count is high", async () => {
+    render(
+      <KibbleCornerCompanion
+        {...props}
+        hasText
+        stats={{ total_tokens: 5000, context_percent: 10 }}
+      />,
+    );
+    await userEvent.click(screen.getByTitle(/fazer carinho/i));
+    expect(screen.getByText(/verdadeiro banquete/i)).toBeInTheDocument();
+  });
+});
+
+describe("KibbleMascot", () => {
+  it("keeps its visual identity while switching to the eating reaction", () => {
+    const { container } = render(<KibbleMascot isTyping size={96} />);
+    expect(screen.getByRole("img", { name: /kibble \(eating\)/i })).toBeInTheDocument();
+    expect(container.querySelector(".kibble-token-to-mouth")).toBeInTheDocument();
+  });
+
+  it("renders the sleeping expression as an accessible mascot state", () => {
+    render(<KibbleMascot state="sleeping" size={96} />);
+    expect(screen.getByRole("img", { name: /kibble \(sleeping\)/i })).toBeInTheDocument();
+  });
+
+  it("does not keep a static token beside the mouth while idle", () => {
+    const { container } = render(<KibbleMascot state="idle" size={96} />);
+    expect(container.querySelector(".kibble-token-to-mouth")).not.toBeInTheDocument();
+  });
+
+  it("turns its eyes toward the prompt while text is present", () => {
+    const { container } = render(<KibbleMascot lookAtPrompt state="idle" size={96} />);
+    expect(container.querySelector('[data-gaze="left"]')).toBeInTheDocument();
+  });
+});
+
 describe("api.estimatePrompt", () => {
   let estimatePrompt;
 
@@ -145,7 +205,7 @@ describe("api.estimatePrompt", () => {
       ok: true,
       json: async () => mockData,
     }));
-    const result = await estimatePrompt("hello", "gpt-4o", "", 50);
+    const result = await estimatePrompt("hello", "gpt-4o", "", "", 50);
     expect(result).toEqual(mockData);
   });
 
@@ -155,15 +215,15 @@ describe("api.estimatePrompt", () => {
       status: 400,
       json: async () => ({ detail: "Unsupported model" }),
     }));
-    await expect(estimatePrompt("hello", "bad-model", "", 50)).rejects.toThrow(
+    await expect(estimatePrompt("hello", "bad-model", "", "", 50)).rejects.toThrow(
       "Unsupported model",
     );
   });
 
-  it("TypeError (network down) — throws API unavailable message", async () => {
+  it("TypeError (network down) — throws a friendly unavailable message", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("Failed to fetch")));
-    await expect(estimatePrompt("hello", "gpt-4o", "", 50)).rejects.toThrow(
-      /api unavailable/i,
+    await expect(estimatePrompt("hello", "gpt-4o", "", "", 50)).rejects.toThrow(
+      /não foi possível acessar/i,
     );
   });
 });

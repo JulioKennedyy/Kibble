@@ -1,0 +1,53 @@
+services:
+  - type: web
+    name: kibble-jk-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt && python -c "import tiktoken; tiktoken.get_encoding('o200k_base')"
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: KIBBLE_CORS_ORIGINS
+        fromService:
+          type: web
+          name: kibble-jk-web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: KIBBLE_RATE_LIMIT_PER_MINUTE
+        value: 120
+      - key: KIBBLE_MAX_TOTAL_INPUT_CHARS
+        value: 500000
+      - key: KIBBLE_MAX_REQUEST_BODY_BYTES
+        value: 2100000
+
+  - type: web
+    name: kibble-jk-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: kibble-jk-api
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: VITE_API_TIMEOUT_MS
+        value: 75000
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=()

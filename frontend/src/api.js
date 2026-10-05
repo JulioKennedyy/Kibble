@@ -2,8 +2,13 @@
 // API keys are NEVER stored or sent from the frontend.
 // All estimation is done server-side.
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
-const DEFAULT_TIMEOUT_MS = 8000;
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
+const API_URL = (configuredApiUrl || "http://localhost:8000").replace(/\/$/, "");
+const parsedTimeout = Number(import.meta.env.VITE_API_TIMEOUT_MS);
+// Free web services can need close to a minute to wake after being idle.
+const DEFAULT_TIMEOUT_MS = Number.isFinite(parsedTimeout) && parsedTimeout > 0
+  ? parsedTimeout
+  : 75_000;
 
 /**
  * Fetch all models from the backend catalogue.
@@ -65,7 +70,7 @@ export async function estimatePrompt(
 
     if (!response.ok) {
       const body = await response.json().catch(() => ({}));
-      throw new Error(body.detail ?? `HTTP ${response.status}`);
+      throw new Error(_detailMessage(body.detail) ?? `HTTP ${response.status}`);
     }
 
     return await response.json();
@@ -77,13 +82,22 @@ export async function estimatePrompt(
   }
 }
 
+function _detailMessage(detail) {
+  if (typeof detail === "string") return detail;
+  if (Array.isArray(detail)) {
+    const messages = detail.map((item) => item?.msg).filter(Boolean);
+    if (messages.length) return messages.join(" ");
+  }
+  return null;
+}
+
 function _wrapError(err, outerSignal) {
   if (err?.name === "AbortError") {
     if (outerSignal?.aborted) throw err; // debounce / user cancelled
-    throw new Error("The API took too long to respond. Is the backend running?");
+    throw new Error("O servidor demorou para acordar. Tente novamente em alguns segundos.");
   }
   if (err instanceof TypeError) {
-    throw new Error("API unavailable. Start the FastAPI backend on port 8000.");
+    throw new Error("Não foi possível acessar o servidor do Kibble.");
   }
   throw err;
 }

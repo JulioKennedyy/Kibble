@@ -36,18 +36,25 @@ export default function App() {
   const [models, setModels] = useState([]);
   const [stats, setStats] = useState(EMPTY_STATS);
   const [isLoading, setIsLoading] = useState(false);
+  const [isWakingServer, setIsWakingServer] = useState(false);
   const [error, setError] = useState("");
   const [retryKey, setRetryKey] = useState(0);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSleepy, setIsSleepy] = useState(false);
-  const [isHungry, setIsHungry] = useState(false);
-  const [modelBounce, setModelBounce] = useState(false);
   const typingTimer = useRef(null);
   const deleteTimer = useRef(null);
   const idleTimer = useRef(null);
-  const hungryTimer = useRef(null);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsWakingServer(false);
+      return undefined;
+    }
+    const timer = setTimeout(() => setIsWakingServer(true), 3000);
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
   // Load model catalogue once
   useEffect(() => {
@@ -92,11 +99,9 @@ export default function App() {
     const isDel = currentValue !== undefined && value.length < currentValue.length;
     setter(value);
     setIsSleepy(false);
-    setIsHungry(false);
     clearTimeout(typingTimer.current);
     clearTimeout(deleteTimer.current);
     clearTimeout(idleTimer.current);
-    clearTimeout(hungryTimer.current);
 
     if (isDel) {
       setIsDeleting(true);
@@ -108,78 +113,48 @@ export default function App() {
       typingTimer.current = setTimeout(() => setIsTyping(false), 1400);
     }
 
-    // After 8s of inactivity, Kibble gets hungry looking for more tokens
-    hungryTimer.current = setTimeout(() => setIsHungry(true), 8000);
     // After 25s, Kibble peacefully falls asleep
     idleTimer.current = setTimeout(() => setIsSleepy(true), 25000);
   };
 
-  // ── Model change bounce ──
+  // Keep model selection in one place so estimate effects react consistently.
   const handleModelSelect = (model) => {
     setSelectedModel(model);
-    setModelBounce(true);
-    setTimeout(() => setModelBounce(false), 800);
   };
 
-  // ── Sleepy / Hungry timer on mount ──
+  // Let Kibble fall asleep after a quiet interval.
   useEffect(() => {
-    hungryTimer.current = setTimeout(() => setIsHungry(true), 8000);
     idleTimer.current = setTimeout(() => setIsSleepy(true), 25000);
     return () => {
       clearTimeout(idleTimer.current);
-      clearTimeout(hungryTimer.current);
       clearTimeout(deleteTimer.current);
     };
   }, []);
 
-  // Mascot reacts smoothly to live site state
-  const getMascotState = () => {
-    if (error) return "surprised";
-    const effectiveBudget = showAdvanced ? budgetTokens : 0;
-    const isQuotaExceeded =
-      (effectiveBudget > 0 && tokens > effectiveBudget) ||
-      (stats.context_percent >= 100);
-    if (isQuotaExceeded) return "scared";
-    if (isDeleting) return "scared";
-    if (isLoading && !isTyping) return "thinking";
-    if (isTyping) return "eating";
-    if (!text && !systemPrompt && !conversationHistory) {
-      if (isSleepy) return "sleeping";
-      return "idle";
-    }
-    if (tokens > 4000) return "satisfied";
-    if (tokens > 80) return "satisfied";
-    return "idle";
-  };
-  const mascotState = getMascotState();
-
   return (
-    <div className="min-h-screen bg-[#071216] text-zinc-200">
+    <div className="kibble-app min-h-screen text-zinc-200">
       {/* ── Header ──────────────────────────────────────────── */}
-      <header className="mx-auto flex max-w-4xl items-center justify-between px-6 py-5">
-        {/* Brand Logo with Kibble Mascot */}
-        <div className="flex items-center gap-2.5 text-base font-semibold tracking-tight text-zinc-100 select-none">
-          <span
-            className="relative flex h-10 w-12 items-center justify-center transition-transform hover:scale-105"
-            aria-hidden="true"
-          >
-            <KibbleMascot
-              isTyping={isTyping}
-              isDeleting={isDeleting}
-              size={40}
-              state={mascotState}
-              showGlow={false}
-              showShadow={false}
-              interactive={false}
-            />
-          </span>
-          <span>Kibble</span>
+      <header className="mx-auto flex max-w-4xl items-center justify-between px-6 py-3">
+        {/* Stable brand mark stays readable at small sizes. */}
+        <div className="flex items-center gap-3 text-lg font-semibold tracking-tight text-zinc-100 select-none">
+          <KibbleMascot
+            className="kibble-brand-mark"
+            interactive={false}
+            showGlow={false}
+            showShadow={false}
+            size={48}
+            state="idle"
+          />
+          <span className="text-white">Kibble</span>
         </div>
 
         {/* Model selector (dropdown pill) + loading indicator */}
         <div className="flex items-center gap-3">
           {isLoading && (
-            <LoaderCircle className="animate-spin text-cyan-300" size={13} />
+            <span className="inline-flex items-center gap-1.5 text-[10px] text-zinc-500" role="status">
+              <LoaderCircle className="animate-spin text-cyan-300" size={13} />
+              {isWakingServer && <span>Acordando servidor…</span>}
+            </span>
           )}
           <ModelSelector
             models={models}
@@ -190,10 +165,22 @@ export default function App() {
       </header>
 
       {/* ── Main ──────────────────────────────────────────────── */}
-      <main className="mx-auto max-w-4xl px-6 pb-20">
+      <main className="mx-auto max-w-4xl px-6 pb-24">
+        <div className="mb-4 pt-1 sm:pt-2">
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-violet-400/15 bg-violet-400/[0.06] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-violet-300">
+            Estimativa privada e sem provedores
+          </div>
+          <h1 className="max-w-2xl text-3xl font-semibold tracking-[-0.035em] text-white sm:text-4xl">
+            Entenda seus tokens antes de enviar.
+          </h1>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-500">
+            Compare modelos, estime custos e veja quanto contexto seu prompt consome — sem enviar seu texto para APIs de IA.
+          </p>
+        </div>
+
         {/* Card principal */}
         <section
-          className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/30 shadow-2xl shadow-black/20"
+          className="kibble-panel overflow-hidden rounded-2xl border border-violet-300/10 bg-[#0c0b19]/75 shadow-2xl shadow-black/30 backdrop-blur-xl"
           aria-label="Entrada do prompt"
         >
           {/* Instrução do sistema */}
@@ -313,6 +300,11 @@ export default function App() {
 
         {/* Painel de comparação */}
         <ComparePanel estimate={stats} />
+
+        <p className="mx-auto mt-4 max-w-2xl text-center text-[10px] leading-4 text-zinc-700">
+          Estimativa indicativa em USD, sem descontos de cache, imagens ou ferramentas.
+          Gemini e Claude usam contagem aproximada. Preços revisados em outubro de 2026.
+        </p>
       </main>
 
       {/* Kibble Companion passivo no canto da tela */}

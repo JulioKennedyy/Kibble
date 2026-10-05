@@ -1,23 +1,32 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from config import (
+    MAX_REQUEST_BODY_BYTES,
+    RATE_LIMIT_PER_MINUTE,
+    allowed_origins,
+)
+from middleware import RateLimitMiddleware, RequestBodyLimitMiddleware, SecurityHeadersMiddleware
 from models import EstimateRequest, EstimateResponse, ModelInfo
 from token_service import estimate_tokens, list_models
 
 app = FastAPI(title="Kibble API", version="2.0.0", description="Token & cost estimator for LLM prompts.")
 
+app.add_middleware(RequestBodyLimitMiddleware, max_bytes=MAX_REQUEST_BODY_BYTES)
+app.add_middleware(RateLimitMiddleware, requests_per_minute=RATE_LIMIT_PER_MINUTE)
+app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["*"],
+    allow_origins=allowed_origins(),
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
 )
 
 
 @app.get("/api/health")
 def health() -> dict[str, str]:
-    return {"status": "ok", "version": "2.0.0"}
+    return {"status": "ok", "version": app.version}
 
 
 @app.get("/api/models", response_model=list[ModelInfo])
